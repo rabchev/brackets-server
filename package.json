@@ -1,0 +1,8 @@
+{
+    "name": "node-brackets",
+    "description": "Adobe Brackets for node.js",
+    "version": "0.1.0",
+    "author": "Boyan Rabchev <boyan@rabchev.com>",
+    "repository": "https://github.com/rabchev/node-brackets-module.git",
+    "main": "index"
+}
