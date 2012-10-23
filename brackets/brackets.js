@@ -271,10 +271,12 @@ define(function (require, exports, module) {
         }
     }
     
-    // Prevent unhandled mousedown events from triggering native behavior
-    // Example: activating AutoScroll when clicking the middle mouse button (see #510)
-    $("html").on("mousedown", function (event) {
-        event.preventDefault();
+    // Prevent unhandled middle button clicks from triggering native behavior
+    // Example: activating AutoScroll (see #510)
+    $("html").on("mousedown", ".inline-widget", function (e) {
+        if (e.button === 1) {
+            e.preventDefault();
+        }
     });
     
     // Localize MainViewHTML and inject into <BODY> tag
