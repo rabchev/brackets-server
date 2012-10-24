@@ -19,10 +19,17 @@ module.exports = testCase({
         test.done();
     },
     "test index.html": function(test) {
-        test.expect(1);
+        test.expect(3);
         http.get(appUrl + "/brackets", function(res) {
+            res.setEncoding('utf8');
+            
             test.equal(res.statusCode, 200);
-            test.done();
+            test.equal(res.headers["content-type"], "text/html; charset=UTF-8");
+            res.on("data", function(chunk) {
+                var str = "" + chunk;
+                test.ok(str.indexOf("<script src=\"thirdparty/require.js\" data-main=\"brackets\"></script>") != -1);
+                test.done();
+            });            
         }).on('error', function(e) {
             console.log("Got error: " + e.message);
             test.done();
