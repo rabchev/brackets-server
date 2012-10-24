@@ -4,5 +4,8 @@
     "version": "0.1.0",
     "author": "Boyan Rabchev <boyan@rabchev.com>",
     "repository": "https://github.com/rabchev/node-brackets-module.git",
-    "main": "index"
+    "main": "index",
+    "dependencies": {
+        "send": "*"
+      }
 }

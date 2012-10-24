@@ -1,1 +1,1 @@
-module.extports = require('./lib/node-brackets.js');
+module.exports = require('./lib/node-brackets');
