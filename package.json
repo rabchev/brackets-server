@@ -6,7 +6,6 @@
     "repository": "https://github.com/rabchev/node-brackets-module.git",
     "main": "index",
     "dependencies": {
-        "send": "*",
         "connect": "*"
     },
     "devDependencies": {
