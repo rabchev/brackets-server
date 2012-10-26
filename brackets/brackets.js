@@ -49,7 +49,7 @@ require.config({
  */
 define(function (require, exports, module) {
     "use strict";
-    
+    debugger;
     // Load dependent non-module scripts
     require("widgets/bootstrap-dropdown");
     require("widgets/bootstrap-modal");

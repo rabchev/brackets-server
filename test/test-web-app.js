@@ -1,3 +1,6 @@
+/*jslint plusplus: true, devel: true, nomen: true, node: true, indent: 4, maxerr: 50 */
+/*global require, exports, module */
+
 var testCase  = require('nodeunit').testCase;
 
 var connect = require('connect');
@@ -8,70 +11,84 @@ var appUrl = "http://localhost:" + port;
 var app;
 
 module.exports = testCase({
-    "Fixture Setup": function(test) {
+    "Fixture Setup": function (test) {
+        "use strict";
         app = connect()
             .use('/brackets', brackets())
-            .use('/*', function(req, res){
-                  res.send('Hello World');
-                })
+            .use(function (req, res) {
+                res.end('Hello World');
+            })
             .listen(port);
         
         test.done();
     },
-    "test index.html": function(test) {
+    "test index.html": function (test) {
+        "use strict";
         test.expect(3);
-        http.get(appUrl + "/brackets", function(res) {
+        http.get(appUrl + "/brackets", function (res) {
             res.setEncoding('utf8');
             
             test.equal(res.statusCode, 200);
             test.equal(res.headers["content-type"], "text/html; charset=UTF-8");
-            res.on("data", function(chunk) {
+            res.on("data", function (chunk) {
                 var str = String(chunk);
-                test.ok(str.indexOf("<script src=\"thirdparty/require.js\" data-main=\"brackets\"></script>") != -1);
+                test.ok(str.indexOf("<script src=\"thirdparty/require.js\" data-main=\"brackets\"></script>") !== -1);
                 test.done();
-            });            
-        }).on('error', function(e) {
+            });
+        }).on('error', function (e) {
             console.log("Got error: " + e.message);
             test.done();
         });
     },
-    "test resource file": function(test) {
+    "test resource file": function (test) {
+        "use strict";
         test.expect(3);
-        http.get(appUrl + "/brackets/thirdparty/require.js", function(res) {
+        http.get(appUrl + "/brackets/thirdparty/require.js", function (res) {
             res.setEncoding('utf8');
             
             test.equal(res.statusCode, 200);
             test.equal(res.headers["content-type"], "application/javascript");
-            res.on("data", function(chunk) {
+            res.on("data", function (chunk) {
                 var str = String(chunk);
-                test.ok(str.indexOf("RequireJS 1.0.3 Copyright (c) 2010-2011, The Dojo Foundation All Rights Reserved.") != -1);
+                test.ok(str.indexOf("RequireJS 1.0.3 Copyright (c) 2010-2011, The Dojo Foundation All Rights Reserved.") !== -1);
                 test.done();
-            });            
-        }).on('error', function(e) {
+            });
+        }).on('error', function (e) {
             console.log("Got error: " + e.message);
             test.done();
         });
     },
-    "test non Brackets request": function(test) {
-        test.expect(3);
-        http.get(appUrl + "/", function(res) {
+    "test Brackets 404": function (test) {
+        "use strict";
+        test.expect(1);
+        http.get(appUrl + "/brackets/nonexistent.js", function (res) {
+            test.equal(res.statusCode, 404);
+            test.done();
+        }).on('error', function (e) {
+            console.log("Got error: " + e.message);
+            test.done();
+        });
+    },
+    "test non Brackets request": function (test) {
+        "use strict";
+        test.expect(2);
+        http.get(appUrl + "/", function (res) {
             res.setEncoding('utf8');
             
             test.equal(res.statusCode, 200);
-            test.equal(res.headers["content-type"], "text/html");
-            res.on("data", function(chunk) {
+            res.on("data", function (chunk) {
                 var str = String(chunk);
-                test.ok(str.indexOf("Hello World") != -1);
+                test.ok(str.indexOf("Hello World") !== -1);
                 test.done();
-            });            
-        }).on('error', function(e) {
+            });
+        }).on('error', function (e) {
             console.log("Got error: " + e.message);
             test.done();
         });
     },
-    "Fixture Teardown": function(test) {
+    "Fixture Teardown": function (test) {
+        "use strict";
         app.close();
-        
         test.done();
-    }    
+    }
 });
