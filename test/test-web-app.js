@@ -22,10 +22,24 @@ module.exports = testCase({
         
         test.done();
     },
+    "test default path redirect": function (test) {
+        "use strict";
+        test.expect(2);
+        http.get(appUrl + "/brackets", function (res) {
+            res.setEncoding('utf8');
+            
+            test.equal(res.statusCode, 302);
+            test.equal(res.headers.location, "/brackets/");
+            test.done();
+        }).on('error', function (e) {
+            console.log("Got error: " + e.message);
+            test.done();
+        });
+    },
     "test index.html": function (test) {
         "use strict";
         test.expect(3);
-        http.get(appUrl + "/brackets", function (res) {
+        http.get(appUrl + "/brackets/", function (res) {
             res.setEncoding('utf8');
             
             test.equal(res.statusCode, 200);
