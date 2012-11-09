@@ -64,7 +64,7 @@ module.exports = testCase({
             test.equal(res.headers["content-type"], "application/javascript");
             res.on("data", function (chunk) {
                 var str = String(chunk);
-                test.ok(str.indexOf("RequireJS 1.0.3 Copyright (c) 2010-2011, The Dojo Foundation All Rights Reserved.") !== -1);
+                test.ok(str.indexOf("RequireJS") !== -1);
                 test.done();
             });
         }).on('error', function (e) {
