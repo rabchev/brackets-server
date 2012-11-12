@@ -1,3 +1,6 @@
 [submodule "node_modules/nodeunit"]
 	path = node_modules/nodeunit
 	url = git://github.com/caolan/nodeunit.git
+[submodule "brackets-src"]
+	path = brackets-src
+	url = https://github.com/rabchev/node-brackets-src.git
