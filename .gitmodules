@@ -7,3 +7,6 @@
 [submodule "node_modules/connect"]
 	path = node_modules/connect
 	url = https://github.com/senchalabs/connect.git
+[submodule "node_modules/wrench"]
+	path = node_modules/wrench
+	url = https://github.com/ryanmcgrath/wrench-js.git
