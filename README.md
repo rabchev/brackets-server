@@ -51,8 +51,8 @@ Start the app:
     
     $ node index
     
-Open Google Chrome bowser and type *http://localhost:3000* in the address bar. 
-At this point you should see “Hello World”. Navigate to *http://localhost:3000/brackets*. 
+Open Google Chrome bowser and type **http://localhost:3000** in the address bar. 
+At this point you should see “Hello World”. Navigate to **http://localhost:3000/brackets**. 
 Now you should see Brackets UI and the contents of your working directory, including Brackets source.
 
 To limit the access to specific directory/s you can pass an argument to brackets function.
