@@ -6,7 +6,7 @@ integrates [Adobe Brackets](http://brackets.io/) code editor in Node.js based we
 It provides exceptionally convenient way to manage, edit and test project files 
 directly on the server via web browser. Brackets doesn't have to be installed on 
 client machines, it opens in a web browser and comunicates with the server over
-standard HTTP protocol.
+standard HTTP or HTTPS protocol.
 
 This module might be useful for remote development, real-time changes and testing, 
 development form a thin client or device such as tablet, or it could be used in 
@@ -75,11 +75,52 @@ you could use [node-supervisor](https://github.com/isaacs/node-supervisor) or si
 Security Considerations
 -----------------------
 
+Authentication and authorization are outside the scope of this module.
+They should be done by other modules, configured to intercept the request prior to Node-Brackets.
+
+Since Node-Brackets exposes server files for modification over HTTP/HTTPS, it is absolutely critical to 
+properly protect your network or file system. It is strongly recommended **not** to use this module on
+production sites, unless you truly understand the security of your system.
+
 Browser Compatibility
 ---------------------
+
+Apparently, Brackets is currently properly working only in Google Chrome. 
+It kind of works in Firefox but it has some styling problems and JavaScript errors. 
+It doesn’t work at all in Internet Explorer. 
+However, these problems should be referred to Brackets core team.
 
 Known Issues
 ------------
 
 Roadmap
 -------
+
+Updating Brackets source code
+-----------------------------
+
+License
+-------
+
+(MIT License)
+
+Copyright (c) 2012 Boyan Rabchev <boyan@rabchev.com>. All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

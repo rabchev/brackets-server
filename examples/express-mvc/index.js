@@ -1,7 +1,7 @@
 /*
  *
  * This example is taken form express (http://expressjs.com) examples (MVC example) as is. 
- * There are only two lines of code, line 10 and 14, added in index.js file to include Brackets middleware service. 
+ * There are only two lines of code, line 14 and 18, added in index.js file to include Brackets middleware service. 
  *
  * NOTE: in this example we explicitly specify which directories should be accessible to Brackets - ["controllers", "views", "public"]. 
  * If we omit the argument, the current working directory will become the project root and therefore all subfolders and files, 
