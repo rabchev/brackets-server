@@ -10,3 +10,6 @@
 [submodule "node_modules/wrench"]
 	path = node_modules/wrench
 	url = https://github.com/ryanmcgrath/wrench-js.git
+[submodule "node_modules/send"]
+	path = node_modules/send
+	url = https://github.com/visionmedia/send.git

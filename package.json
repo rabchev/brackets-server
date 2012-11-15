@@ -1,7 +1,7 @@
 {
     "name": "brackets",
     "description": "This module integrates [Adobe Brackets](http://brackets.io/) code editor in Node.js based web applications.",
-    "version": "0.2.6",
+    "version": "0.2.7",
     "author": "Boyan Rabchev <boyan@rabchev.com>",
     "contributors": [ 
         { "name": "Boyan Rabchev", "email": "boyan@rabchev.com" }
@@ -9,7 +9,7 @@
     "repository": "https://github.com/rabchev/node-brackets-module.git",
     "main": "index",
     "dependencies": {
-        "connect": "*",
+        "send": "*",
         "wrench": "*"
     },
     "devDependencies": {

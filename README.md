@@ -85,7 +85,7 @@ production sites, unless you truly understand the security of your system.
 Browser Compatibility
 ---------------------
 
-Apparently, Brackets is currently properly working only in Google Chrome. 
+Apparently, Brackets is currently working properly only in Google Chrome. 
 It kind of works in Firefox but it has some styling problems and JavaScript errors. 
 It doesn’t work at all in Internet Explorer. 
 However, these problems should be referred to Brackets core team.
