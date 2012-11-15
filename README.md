@@ -93,8 +93,36 @@ However, these problems should be referred to Brackets core team.
 Known Issues
 ------------
 
+* Delete command doesn’t refresh correctly the active documents tabs and an error 
+  message is displayed if an open document is deleted.
+  
+  Delete command is currently added as an extension, but I believe it should be Brackets core 
+  function in the future and therefore I’m not planning to spend more time on Delete.
+  
+* Check for updates command doesn’t work.
+
+  This is due to Cross-Origin Resource Sharing not allowed by http://dev.brackets.io/updates/stable/en-US.json.
+  I believe this issue can be resolved only by Brackets team.
+  
+* Show Developer Tools - doesn't work.
+
+  Will be fixed.
+  
+* Performance data always shows 0.
+
+  Will be fixed.
+
+* Live Preview - doesn't work.
+
+  Will be fixed.
+
 Roadmap
 -------
+
+* Move "Find in Files" on the server side – performance optimization.
+* Make global install - for easer project creation.
+* Integrate NPM in the UI
+* Integrate Supervisor, possibility Brackets to be served from second port.
 
 Updating Brackets source code
 -----------------------------
