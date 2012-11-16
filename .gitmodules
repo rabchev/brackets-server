@@ -1,0 +1,3 @@
+[submodule "brackets-src"]
+	path = brackets-src
+	url = https://github.com/rabchev/node-brackets-src.git
