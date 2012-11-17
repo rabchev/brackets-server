@@ -5,7 +5,7 @@ Node-Brackets is a [Node.js](http://nodejs.org) module implemented as [Connect](
 integrates [Adobe Brackets](http://brackets.io/) code editor in Node.js based web applications. 
 It provides exceptionally convenient way to manage, edit and test project files 
 directly on the server via web browser. Brackets doesn't have to be installed on 
-client machines, it opens in a web browser and comunicates with the server over
+client machines, it opens in a web browser and communicates with the server over
 standard HTTP or HTTPS protocol.
 
 This module might be useful for remote development, real-time changes and testing, 
@@ -31,7 +31,7 @@ Create test app:
     $ npm install brackets
     . . .
     
-Add index.js file to my-app directory and enter the folwoing code:
+Add index.js file to my-app directory and enter the following code:
 
 ```js
     var connect     = require('connect'),
@@ -119,7 +119,7 @@ Known Issues
 Roadmap
 -------
 
-* Move "Find in Files" on the server side – performance optimization.
+* Move "Find in Files" on the server-side – performance optimization.
 * Make global install - for easer project creation.
 * Integrate NPM in the UI
 * Integrate Supervisor, possibility Brackets to be served from second port.

@@ -1,8 +1,18 @@
 /*jslint plusplus: true, devel: true, nomen: true, node: true, indent: 4, maxerr: 50 */
 /*global require, exports, module */
 
-var connect     = require("../../node_modules/connect"),
-    brackets    = require("../..");
+try {
+    var connect     = require("../../node_modules/connect"),
+        brackets    = require("../..");
+} catch (e) {
+    console.log("Cannot find dependant module.");
+    console.log("Please install dependant modules for this project by doing:");
+    console.log("");
+    console.log("    $ cd ../..");
+    console.log("    $ npm install");
+    console.log("");
+    process.exit();
+}
 
 connect()
     .use('/brackets', brackets())
