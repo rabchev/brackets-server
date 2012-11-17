@@ -57,11 +57,11 @@ Now you should see Brackets UI and the contents of your working directory, inclu
 
 To limit the access to specific directory/s you can pass an argument to brackets function.
 
-* brackets("resources"); 
-  the directory "./resources/" will become the project root.
+* **brackets("resources");** 
+  the directory **"./resources/"** will become the project root.
 
-* brackets(\["controllers", "views", "public"\]); 
-  the directory "./controllers/" will become the initial project root and the other folders will be accessible via
+* **brackets(\["controllers", "views", "public"\]);** 
+  the directory **"./controllers/"** will become the initial project root and the other folders will be accessible via
   Recent Projects dropdown (the small arrow above the navigation tree).
   
 NOTE: the specified directories must exist, otherwise an exception will be thrown.
@@ -126,6 +126,8 @@ Roadmap
 
 Updating Brackets source code
 -----------------------------
+
+TODO:
 
 License
 -------
