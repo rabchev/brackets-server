@@ -11,12 +11,14 @@ var connect     = require("connect"),
     fs          = require("fs"),
     brackets    = require("../"),
     pkg         = require("../package.json"),
-    open        = require("open");
+    open        = require("open"),
+    wrench      = require("wrench");
 
 commander
     .version(pkg.version)
     .option("-p, --port <port>", "Specifies TCP <port> for Brackets service. If omitted, the first free port in the range of 6000 - 6800 is picked.")
     .option("-o, --open", "Opens the project in the default web browser. Warning: since Brackets currently supports only Chrome you should set it as your default browser.")
+    .option("-t, --template <name>", "Specifies the project template to be used upon project creation.")
     .parse(process.argv);
 
 function start(port) {
@@ -40,6 +42,10 @@ function start(port) {
     if (commander.open) {
         open("http://localhost:" + port);
     }
+}
+
+if (commander.template) {
+       
 }
 
 if (commander.port) {
