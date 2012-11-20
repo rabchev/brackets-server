@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+//#!/usr/bin/env node
 
 /*jslint plusplus: true, devel: true, nomen: true, node: true, indent: 4, maxerr: 50 */
 /*global require, exports, module */
@@ -12,7 +12,8 @@ var connect     = require("connect"),
     brackets    = require("../"),
     pkg         = require("../package.json"),
     open        = require("open"),
-    wrench      = require("wrench");
+    wrench      = require("wrench"),
+    path        = require("path");
 
 commander
     .version(pkg.version)
@@ -45,7 +46,18 @@ function start(port) {
 }
 
 if (commander.template) {
-       
+    var sourceDir = path.join(__dirname, "templates", commander.template);
+    wrench.copyDirRecursive(sourceDir, process.cwd(), function (err) {
+        "use strict";
+        
+        if (err) {
+            console.log("An error occurred while coping files from template directory.");
+            console.log(err);
+            return;
+        }
+        
+        
+    });
 }
 
 if (commander.port) {
