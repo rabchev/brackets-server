@@ -1,7 +1,7 @@
 {
-    "name": "my-app",
-    "version": "0.1",
+    "name": "application-name",
+    "version": "0.0.1",
     "dependencies": {
-        "express": "*",
+        "express": "*"
     }
 }

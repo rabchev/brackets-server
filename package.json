@@ -8,9 +8,11 @@
     ],
     "repository": "https://github.com/rabchev/node-brackets-module.git",
     "main": "index",
-    "preferGlobal": "true",
+    "preferGlobal": "false",
     "bin": { 
         "brackets": "./bin/run.js",
+        "brackets-debug": "--debug ./bin/run.js",
+        "brackets-debug-brk": "--debug-brk ./bin/run.js",
         "node-brackets": "./bin/run.js"
     },
     "dependencies": {
@@ -19,7 +21,12 @@
         "wrench": "*",
         "netutil": "*",
         "commander": "*",
-        "open": "*"
+        "open": "*",
+        "npm": "*",
+        "npmconf": "*",
+        "semver": "*",
+        "ini": "*",
+        "nopt": "*"
     },
     "devDependencies": {
         "nodeunit": "*"

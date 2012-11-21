@@ -13,16 +13,22 @@ var connect     = require("connect"),
     pkg         = require("../package.json"),
     open        = require("open"),
     wrench      = require("wrench"),
-    path        = require("path");
+    path        = require("path"),
+    npm         = require("npm"),
+    npmconf     = require("npmconf"),
+    nopt        = require("nopt"),
+    configDefs  = npmconf.defs,
+    shorthands  = configDefs.shorthands,
+    types       = configDefs.types;
 
 commander
     .version(pkg.version)
-    .option("-p, --port <port>", "Specifies TCP <port> for Brackets service. If omitted, the first free port in the range of 6000 - 6800 is picked.")
+    .option("-p, --port <port>", "Specifies TCP <port> for Brackets service. Alternatively, BRACKETS_PORT environment variable can be set. If both are omitted, the first free port in the range of 6000 - 6800 is assigned.")
     .option("-o, --open", "Opens the project in the default web browser. Warning: since Brackets currently supports only Chrome you should set it as your default browser.")
-    .option("-t, --template <name>", "Specifies the project template to be used upon project creation.")
+    .option("-i, --install <template>", "Creates new project based on the template specified.")
     .parse(process.argv);
 
-function start(port) {
+function startBrackets(port) {
     "use strict";
     
     connect()
@@ -45,31 +51,51 @@ function start(port) {
     }
 }
 
-if (commander.template) {
-    var sourceDir = path.join(__dirname, "templates", commander.template);
-    wrench.copyDirRecursive(sourceDir, process.cwd(), function (err) {
-        "use strict";
-        
-        if (err) {
-            console.log("An error occurred while coping files from template directory.");
-            console.log(err);
-            return;
-        }
-        
-        
-    });
+function determinePortAndStartBrackets() {
+    "use strict";
+    
+    var port = commander.port || process.env.BRACKETS_PORT;
+    if (port) {
+        startBrackets(port);
+    } else {
+        netutil.findFreePort(6000, 6800, "localhost", function (err, port) {
+            if (err) {
+                throw err;
+            }
+            startBrackets(port);
+        });
+    }
 }
 
-if (commander.port) {
-    start(commander.port);
-} else {
-    netutil.findFreePort(6000, 6800, "localhost", function (err, port) {
+if (commander.install) {
+    var sourceDir = path.join(__dirname, "templates", commander.install);
+    wrench.copyDirSyncRecursive(sourceDir, process.cwd(), { excludeHiddenUnix: true });
+    
+    var conf = nopt(types, shorthands);
+    conf._exit = true;
+    npm.load(conf, function (er) {
         "use strict";
-        
-        if (err) {
-            throw err;
+    
+        if (er) {
+            throw er;
         }
-        start(port);
+            
+        npm.commands.install([], function (err, installed) {
+            if (err) {
+                throw er;
+            }
+            
+            var binDir = path.join(sourceDir, ".bin", "package.json");
+            fs.exists(binDir, function (exists) {
+                if (exists === true) {
+                    console.log("exists");
+                }
+            });
+        });
     });
+} else {
+    determinePortAndStartBrackets();
 }
+
+
 
