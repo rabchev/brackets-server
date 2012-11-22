@@ -85,10 +85,12 @@ if (commander.install) {
                 throw er;
             }
             
-            var binDir = path.join(sourceDir, ".bin", "package.json");
-            fs.exists(binDir, function (exists) {
+            var script = path.join(sourceDir, ".bin");
+            fs.exists(script, function (exists) {
                 if (exists === true) {
-                    console.log("exists");
+                    require(script).install(function () {
+                        determinePortAndStartBrackets();
+                    });
                 }
             });
         });

@@ -1,5 +1,6 @@
 {
-    "scripts": { 
-        "start" : "./install.js" 
-    }
+    "name": "brackets",
+    "description": "This module integrates [Adobe Brackets](http://brackets.io/) code editor in Node.js based web applications.",
+    "version": "0.1.0",
+    "main": "install"
 }
