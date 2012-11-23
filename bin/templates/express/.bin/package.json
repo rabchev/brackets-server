@@ -1,6 +1,6 @@
 {
-    "name": "brackets",
-    "description": "This module integrates [Adobe Brackets](http://brackets.io/) code editor in Node.js based web applications.",
+    "name": "express-template-install",
+    "description": "This module installs Express project template.",
     "version": "0.1.0",
     "main": "install"
 }

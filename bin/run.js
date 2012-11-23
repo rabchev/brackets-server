@@ -73,22 +73,26 @@ if (commander.install) {
     
     var conf = nopt(types, shorthands);
     conf._exit = true;
-    npm.load(conf, function (er) {
+    npm.load(conf, function (err) {
         "use strict";
     
-        if (er) {
-            throw er;
+        if (err) {
+            throw err;
         }
             
         npm.commands.install([], function (err, installed) {
             if (err) {
-                throw er;
+                throw err;
             }
             
             var script = path.join(sourceDir, ".bin");
             fs.exists(script, function (exists) {
                 if (exists === true) {
-                    require(script).install(function () {
+                    require(script).install(function (err) {
+                        if (err) {
+                            console.log('error: ' + err);
+                        }
+                        
                         determinePortAndStartBrackets();
                     });
                 }
