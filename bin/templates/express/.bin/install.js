@@ -6,16 +6,17 @@ var path        = require("path"),
     spawn       = cp.spawn,
     exec        = cp.exec;
 
-exports.install = function (callback) {
+exports.install = function (args, callback) {
     "use strict";
     
     var cwd         = process.cwd(),
-        expPath     = path.join(cwd, "node_modules", "express", "bin", "express"),
-        exp         = spawn("node", [expPath], { cwd: cwd, env: process.env });
+        expPath     = [path.join(cwd, "node_modules", "express", "bin", "express")],
+        expArgs     = expPath.concat(args || []),
+        exp         = spawn("node", expArgs, { cwd: cwd, env: process.env });
     
-    exp.stdout.setEncoding('utf8');
-    exp.stdout.on('data', function (data) {
-        console.log('stdout: ' + data);
+    exp.stdout.setEncoding("utf8");
+    exp.stdout.on("data", function (data) {
+        console.log("stdout: " + data);
         if (data === "destination is not empty, continue? ") {
             exp.stdin.write("y");
             exp.stdin.end();
@@ -23,39 +24,21 @@ exports.install = function (callback) {
         }
     });
     
-    exp.stderr.setEncoding('utf8');
-    exp.stderr.on('data', function (data) {
+    exp.stderr.setEncoding("utf8");
+    exp.stderr.on("data", function (data) {
         callback(data);
     });
     
-    exp.on('exit', function (code) {
+    exp.on("exit", function (code) {
+        console.log("express process exited with code " + code);
         if (code === 0) {
-            console.log('express process exited with code ' + code);
-            console.log('installing dependencies...');
-            
+            console.log("installing dependencies...");
+            // On Windows spawn won't run .cmd batch file, that's why we use exec instead.
             exec("npm install", function (err, stdout, stderr) {
-                console.log('stdout: ' + stdout);
-                console.log('stderr: ' + stderr);
+                console.log("stdout: " + stdout);
+                console.log("stderr: " + stderr);
                 callback(err);
             });
-            
-//            var npm = spawn("npm", ["install"], { cwd: cwd, env: process.env });
-//            
-//            npm.stdout.setEncoding('utf8');
-//            npm.stdout.on('data', function (data) {
-//                console.log('stdout: ' + data);
-//            });
-//            
-//            npm.stderr.setEncoding('utf8');
-//            npm.stderr.on('data', function (data) {
-//                callback(data);
-//            });
-//            
-//            npm.on('exit', function (code) {
-//                if (code === 0) {
-//                    callback();
-//                }
-//            });
         }
     });
 };

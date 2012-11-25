@@ -26,7 +26,8 @@
         "npmconf": "*",
         "semver": "*",
         "ini": "*",
-        "nopt": "*"
+        "nopt": "*",
+        "node-inspector": "*"
     },
     "devDependencies": {
         "nodeunit": "*"

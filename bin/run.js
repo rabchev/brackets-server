@@ -68,7 +68,8 @@ function determinePortAndStartBrackets() {
 }
 
 if (commander.install) {
-    var sourceDir = path.join(__dirname, "templates", commander.install);
+    var args = commander.install.split(" ");
+    var sourceDir = path.join(__dirname, "templates", args[0]);
     wrench.copyDirSyncRecursive(sourceDir, process.cwd(), { excludeHiddenUnix: true });
     
     var conf = nopt(types, shorthands);
@@ -88,7 +89,8 @@ if (commander.install) {
             var script = path.join(sourceDir, ".bin");
             fs.exists(script, function (exists) {
                 if (exists === true) {
-                    require(script).install(function (err) {
+                    args.splice(0, 1);
+                    require(script).install(args, function (err) {
                         if (err) {
                             console.log('error: ' + err);
                         }
