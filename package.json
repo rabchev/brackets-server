@@ -27,7 +27,8 @@
         "semver": "*",
         "ini": "*",
         "nopt": "*",
-        "node-inspector": "*"
+        "node-inspector": "*",
+        "supervisor": "*"
     },
     "devDependencies": {
         "nodeunit": "*"
