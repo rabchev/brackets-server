@@ -28,7 +28,8 @@
         "ini": "*",
         "nopt": "*",
         "node-inspector": "*",
-        "supervisor": "*"
+        "supervisor": "*",
+        "socket.io": "*"
     },
     "devDependencies": {
         "nodeunit": "*"
