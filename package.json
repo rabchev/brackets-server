@@ -1,7 +1,7 @@
 {
     "name": "brackets",
     "description": "This module integrates [Adobe Brackets](http://brackets.io/) code editor in Node.js based web applications.",
-    "version": "0.4.0-5-beta",
+    "version": "0.4.0-7-beta",
     "author": "Boyan Rabchev <boyan@rabchev.com>",
     "contributors": [
         { "name": "Boyan Rabchev", "email": "boyan@rabchev.com" }
@@ -10,8 +10,8 @@
     "main": "index",
     "preferGlobal": "false",
     "bin": {
-        "brackets": "./bin/run",
-        "node-brackets": "./bin/run"
+        "brackets": "./bin/run.js",
+        "node-brackets": "./bin/run.js"
     },
     "dependencies": {
         "send": "*",
