@@ -32,7 +32,8 @@ function startBrackets(port) {
     "use strict";
     
     connect()
-        .use('/brackets', brackets())
+        .use("/brackets", brackets())
+        .use(connect.favicon(path.join(__dirname, "favicon.ico")))
         .use(function (req, res) {
             if (req.url === "/") {
                 res.writeHead(302, {Location: "/brackets/"});
