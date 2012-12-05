@@ -26,6 +26,7 @@ commander
     .option("-p, --port <port>", "Specifies TCP <port> for Brackets service. Alternatively, BRACKETS_PORT environment variable can be set. If both are omitted, the first free port in the range of 6000 - 6800 is assigned.")
     .option("-o, --open", "Opens the project in the default web browser. Warning: since Brackets currently supports only Chrome you should set it as your default browser.")
     .option("-i, --install <template>", "Creates new project based on the template specified.")
+    .option("-s, --start", "Starts Brackets after template installation.")
     .parse(process.argv);
 
 function startBrackets(port) {
@@ -71,7 +72,21 @@ function determinePortAndStartBrackets() {
 if (commander.install) {
     var args = commander.install.split(" ");
     var sourceDir = path.join(__dirname, "templates", args[0]);
+    var destDir = process.cwd();
     wrench.copyDirSyncRecursive(sourceDir, process.cwd(), { excludeHiddenUnix: true });
+    
+    // TODO: [Hack] 
+    //          For some reason the process current working directory is changed to an invalid path after copy.
+    //          Have to investigate this and see if it can be fixed.
+    try {
+        process.cwd();
+    } catch (err) {
+        if (err.code === "ENOENT") {
+            process.chdir(destDir);
+        } else {
+            throw err;   
+        }
+    }
     
     var conf = nopt(types, shorthands);
     conf._exit = true;
@@ -95,8 +110,10 @@ if (commander.install) {
                         if (err) {
                             console.log('error: ' + err);
                         }
-                        
-                        determinePortAndStartBrackets();
+                        console.log("Installation complete!");
+                        if (commander.start || commander.open) {
+                            determinePortAndStartBrackets();
+                        }
                     });
                 }
             });
