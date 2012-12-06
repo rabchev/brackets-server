@@ -2,7 +2,7 @@
 /*global require, exports, module */
 
 try {
-    var reporter = require('nodeunit').reporters.default;
+    var reporter = require("nodeunit").reporters.default;
 } catch (e) {
     console.log("Cannot find nodeunit module.");
     console.log("Please install dependant modules for this project by doing:");
@@ -13,4 +13,6 @@ try {
 }
 
 process.chdir(__dirname);
-reporter.run(['./test-web-app.js']);
+reporter.run(["./test-web-app.js",
+              "./bin_run.js"
+             ]);

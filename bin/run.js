@@ -1,6 +1,6 @@
-#!/usr/bin/env node
+//#!/usr/bin/env node
 
-/*jslint plusplus: true, devel: true, nomen: true, node: true, indent: 4, maxerr: 50 */
+/*jslint plusplus: true, devel: true, nomen: true, node: true, vars: true, indent: 4, maxerr: 50 */
 /*global require, exports, module */
 
 var connect     = require("connect"),
@@ -69,56 +69,63 @@ function determinePortAndStartBrackets() {
     }
 }
 
-if (commander.install) {
-    var args = commander.install.split(" ");
-    var sourceDir = path.join(__dirname, "templates", args[0]);
-    var destDir = process.cwd();
-    wrench.copyDirSyncRecursive(sourceDir, process.cwd(), { excludeHiddenUnix: true });
+exports.execute = function () {
+    "use strict";
     
-    // TODO: [Hack] 
-    //          For some reason the process current working directory is changed to an invalid path after copy.
-    //          Have to investigate this and see if it can be fixed.
-    try {
-        process.cwd();
-    } catch (err) {
-        if (err.code === "ENOENT") {
-            process.chdir(destDir);
-        } else {
-            throw err;   
+    if (commander.install) {
+        var args = commander.install.split(" "),
+            sourceDir = path.join(__dirname, "templates", args[0]),
+            destDir = process.cwd();
+        
+        wrench.copyDirSyncRecursive(sourceDir, process.cwd(), { excludeHiddenUnix: true });
+        
+        // TODO: [Hack] 
+        //          For some reason the process current working directory is changed to an invalid path after copy.
+        //          Have to investigate this and see if it can be fixed.
+        try {
+            process.cwd();
+        } catch (err) {
+            if (err.code === "ENOENT") {
+                process.chdir(destDir);
+            } else {
+                throw err;
+            }
         }
-    }
-    
-    var conf = nopt(types, shorthands);
-    conf._exit = true;
-    npm.load(conf, function (err) {
-        "use strict";
-    
-        if (err) {
-            throw err;
-        }
-            
-        npm.commands.install([], function (err, installed) {
+        
+        var conf = nopt(types, shorthands);
+        conf._exit = true;
+        npm.load(conf, function (err) {
             if (err) {
                 throw err;
             }
-            
-            var script = path.join(sourceDir, ".bin");
-            fs.exists(script, function (exists) {
-                if (exists === true) {
-                    args.splice(0, 1);
-                    require(script).install(args, function (err) {
-                        if (err) {
-                            console.log('error: ' + err);
-                        }
-                        console.log("Installation complete!");
-                        if (commander.start || commander.open) {
-                            determinePortAndStartBrackets();
-                        }
-                    });
+                
+            npm.commands.install([], function (err, installed) {
+                if (err) {
+                    throw err;
                 }
+                
+                var script = path.join(sourceDir, ".bin");
+                fs.exists(script, function (exists) {
+                    if (exists === true) {
+                        args.splice(0, 1);
+                        require(script).install(args, function (err) {
+                            if (err) {
+                                console.log('error: ' + err);
+                            }
+                            console.log("Installation complete!");
+                            if (commander.start || commander.open) {
+                                determinePortAndStartBrackets();
+                            }
+                        });
+                    }
+                });
             });
         });
-    });
-} else {
-    determinePortAndStartBrackets();
+    } else {
+        determinePortAndStartBrackets();
+    }
+};
+
+if (process.env.NODE_ENV !== "test") {
+    exports.execute();
 }
