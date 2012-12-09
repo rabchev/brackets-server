@@ -30,7 +30,8 @@
         "socket.io": "*"
     },
     "devDependencies": {
-        "nodeunit": "*"
+        "nodeunit": "*",
+        "rewire": "*"
     },
     "keywords": [
         "brackets",

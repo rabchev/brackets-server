@@ -1,4 +1,4 @@
-//#!/usr/bin/env node
+#!/usr/bin/env node
 
 /*jslint plusplus: true, devel: true, nomen: true, node: true, vars: true, indent: 4, maxerr: 50 */
 /*global require, exports, module */
@@ -19,20 +19,20 @@ var connect     = require("connect"),
     nopt        = require("nopt"),
     configDefs  = npmconf.defs,
     shorthands  = configDefs.shorthands,
-    types       = configDefs.types;
+    types       = configDefs.types,
+    app;
 
 commander
-    .version(pkg.version)
-    .option("-p, --port <port>", "Specifies TCP <port> for Brackets service. Alternatively, BRACKETS_PORT environment variable can be set. If both are omitted, the first free port in the range of 6000 - 6800 is assigned.")
-    .option("-o, --open", "Opens the project in the default web browser. Warning: since Brackets currently supports only Chrome you should set it as your default browser.")
-    .option("-i, --install <template>", "Creates new project based on the template specified.")
-    .option("-s, --start", "Starts Brackets after template installation.")
-    .parse(process.argv);
+        .version(pkg.version)
+        .option("-p, --port <port>", "Specifies TCP <port> for Brackets service. Alternatively, BRACKETS_PORT environment variable can be set. If both are omitted, the first free port in the range of 6000 - 6800 is assigned.")
+        .option("-o, --open", "Opens the project in the default web browser. Warning: since Brackets currently supports only Chrome you should set it as your default browser.")
+        .option("-i, --install <template>", "Creates new project based on the template specified.")
+        .option("-s, --start", "Starts Brackets after template installation.");
 
-function startBrackets(port) {
+function startBrackets(port, callback) {
     "use strict";
     
-    connect()
+    app = connect()
         .use("/brackets", brackets())
         .use(connect.favicon(path.join(__dirname, "favicon.ico")))
         .use(function (req, res) {
@@ -47,30 +47,35 @@ function startBrackets(port) {
         .listen(port);
     
     console.log(util.format("\n  listening on port %d\n", port));
+    if (callback) {
+        callback(port);
+    }
     
     if (commander.open) {
         open("http://localhost:" + port);
     }
 }
 
-function determinePortAndStartBrackets() {
+function determinePortAndStartBrackets(callback) {
     "use strict";
     
     var port = commander.port || process.env.BRACKETS_PORT;
     if (port) {
-        startBrackets(port);
+        startBrackets(port, callback);
     } else {
         netutil.findFreePort(6000, 6800, "localhost", function (err, port) {
             if (err) {
                 throw err;
             }
-            startBrackets(port);
+            startBrackets(port, callback);
         });
     }
 }
 
-exports.execute = function () {
+exports.start = function (callback) {
     "use strict";
+    
+    commander.parse(process.argv);
     
     if (commander.install) {
         var args = commander.install.split(" "),
@@ -114,7 +119,9 @@ exports.execute = function () {
                             }
                             console.log("Installation complete!");
                             if (commander.start || commander.open) {
-                                determinePortAndStartBrackets();
+                                determinePortAndStartBrackets(callback);
+                            } else {
+                                callback(null);
                             }
                         });
                     }
@@ -122,10 +129,22 @@ exports.execute = function () {
             });
         });
     } else {
-        determinePortAndStartBrackets();
+        determinePortAndStartBrackets(callback);
     }
 };
 
+exports.stop = function () {
+    "use strict";
+    
+    if (app) {
+        app.close();
+        app = null;
+        console.log("Brackets stopped.");
+    }
+};
+
+
+// Start immediately if not testing.
 if (process.env.NODE_ENV !== "test") {
-    exports.execute();
+    exports.start();
 }
