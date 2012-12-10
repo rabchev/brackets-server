@@ -22,12 +22,15 @@ var connect     = require("connect"),
     types       = configDefs.types,
     app;
 
-commander
-        .version(pkg.version)
-        .option("-p, --port <port>", "Specifies TCP <port> for Brackets service. Alternatively, BRACKETS_PORT environment variable can be set. If both are omitted, the first free port in the range of 6000 - 6800 is assigned.")
-        .option("-o, --open", "Opens the project in the default web browser. Warning: since Brackets currently supports only Chrome you should set it as your default browser.")
-        .option("-i, --install <template>", "Creates new project based on the template specified.")
-        .option("-s, --start", "Starts Brackets after template installation.");
+// Unit tests may load this module multiple times and we have to avoid duplicating options. 
+if (commander.options.length === 0) {
+    commander
+            .version(pkg.version)
+            .option("-p, --port <port>", "Specifies TCP <port> for Brackets service. Alternatively, BRACKETS_PORT environment variable can be set. If both are omitted, the first free port in the range of 6000 - 6800 is assigned.")
+            .option("-o, --open", "Opens the project in the default web browser. Warning: since Brackets currently supports only Chrome you should set it as your default browser.")
+            .option("-i, --install <template>", "Creates new project based on the template specified.")
+            .option("-s, --start", "Starts Brackets after template installation.");
+}
 
 function startBrackets(port, callback) {
     "use strict";
@@ -72,62 +75,86 @@ function determinePortAndStartBrackets(callback) {
     }
 }
 
+// Just a way to mock the required script
+var getInstallScritp = function (scriptPath) {
+    "use strict";
+    
+    return require(scriptPath);
+};
+
+function installTemplate(callback) {
+    "use strict";
+    
+    var args = commander.install.split(" "),
+        sourceDir = path.join(__dirname, "templates", args[0]),
+        destDir = process.cwd();
+        
+    wrench.copyDirSyncRecursive(sourceDir, process.cwd(), { excludeHiddenUnix: true });
+    
+    // TODO: [Hack] 
+    //          For some reason the process current working directory is changed to an invalid path after copy.
+    //          Have to investigate this and see if it can be fixed.
+    try {
+        process.cwd();
+    } catch (err) {
+        if (err.code === "ENOENT") {
+            process.chdir(destDir);
+        } else {
+            throw err;
+        }
+    }
+    
+    function exit() {
+        console.log("Installation complete!");
+        if (commander.start || commander.open) {
+            determinePortAndStartBrackets(callback);
+        } else {
+            callback(null);
+        }
+    }
+    
+    var conf = nopt(types, shorthands);
+    conf._exit = true;
+    npm.load(conf, function (err) {
+        if (err) {
+            throw err;
+        }
+            
+        npm.commands.install([], function (err, installed) {
+            if (err) {
+                throw err;
+            }
+            
+            var script = path.join(sourceDir, ".bin");
+            fs.exists(script, function (exists) {
+                if (exists === true) {
+                    var scrObj = getInstallScritp(script);
+                    if (scrObj && scrObj.install) {
+                        args.splice(0, 1);
+                        
+                        scrObj.install(args, function (err) {
+                            if (err) {
+                                throw err;
+                            }
+                            
+                            exit();
+                        });
+                    }
+                } else {
+                    exit();
+                }
+            });
+        });
+    });
+}
+
 exports.start = function (callback) {
     "use strict";
     
     commander.parse(process.argv);
     
     if (commander.install) {
-        var args = commander.install.split(" "),
-            sourceDir = path.join(__dirname, "templates", args[0]),
-            destDir = process.cwd();
-        
-        wrench.copyDirSyncRecursive(sourceDir, process.cwd(), { excludeHiddenUnix: true });
-        
-        // TODO: [Hack] 
-        //          For some reason the process current working directory is changed to an invalid path after copy.
-        //          Have to investigate this and see if it can be fixed.
-        try {
-            process.cwd();
-        } catch (err) {
-            if (err.code === "ENOENT") {
-                process.chdir(destDir);
-            } else {
-                throw err;
-            }
-        }
-        
-        var conf = nopt(types, shorthands);
-        conf._exit = true;
-        npm.load(conf, function (err) {
-            if (err) {
-                throw err;
-            }
-                
-            npm.commands.install([], function (err, installed) {
-                if (err) {
-                    throw err;
-                }
-                
-                var script = path.join(sourceDir, ".bin");
-                fs.exists(script, function (exists) {
-                    if (exists === true) {
-                        args.splice(0, 1);
-                        require(script).install(args, function (err) {
-                            if (err) {
-                                console.log('error: ' + err);
-                            }
-                            console.log("Installation complete!");
-                            if (commander.start || commander.open) {
-                                determinePortAndStartBrackets(callback);
-                            } else {
-                                callback(null);
-                            }
-                        });
-                    }
-                });
-            });
-        });
+        installTemplate(callback);
     } else {
         determinePortAndStartBrackets(callback);
     }

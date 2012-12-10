@@ -1,19 +1,28 @@
 /*jslint plusplus: true, devel: true, nomen: true, node: true, vars: true, indent: 4, maxerr: 50 */
 /*global require, exports, module */
 
-debugger;
-
 var testCase    = require("nodeunit").testCase,
     http        = require("http"),
     fs          = require("fs"),
     path        = require("path"),
+    commander   = require("commander"),
     rewire      = require("rewire"),
     appUrl      = "http://localhost:";
+
+function resetCommander() {
+    "use strict";
+    
+    delete commander.port;
+    delete commander.open;
+    delete commander.install;
+    delete commander.start;
+}
 
 function testResponse(test, verifyPort) {
     "use strict";
     
-    var run = require("../bin/run");
+    var run = rewire("../bin/run");
+    resetCommander();
         
     run.start(function (port) {
         verifyPort(port);
@@ -112,6 +121,8 @@ module.exports = testCase({
         var orgArgv = process.argv,
             run     = rewire("../bin/run");
         
+        resetCommander();
+        
         process.argv = ["node", "../lib/node_modules/brackets/bin/run", "-op", "18658"];
         run.__set__("open", function (url) {
             test.equal(url, "http://localhost:18658");
@@ -133,6 +144,8 @@ module.exports = testCase({
             run     = rewire("../bin/run"),
             port;
         
+        resetCommander();
+        
         process.argv = ["node", "../lib/node_modules/brackets/bin/run", "--open"];
         
         run.__set__("open", function (url) {
@@ -149,12 +162,14 @@ module.exports = testCase({
     "Tetst Template Installation": function (test) {
         "use strict";
         
-        test.expect(5);
+        test.expect(9);
         
         var orgArgv = process.argv,
             run     = rewire("../bin/run"),
             srcDir = path.join(__dirname, "../bin/templates/express"),
             dstDir = process.cwd();
+        
+        resetCommander();
         
         process.argv = ["node", "../lib/node_modules/brackets/bin/run", "-i", "express -e"];
         
@@ -185,8 +200,20 @@ module.exports = testCase({
             }
         });
         
+        run.__set__("getInstallScritp", function (scriptPath) {
+            test.equal(scriptPath, path.join(srcDir, ".bin"));
+            return {
+                install: function (args, callback) {
+                    test.ok(args.length === 1);
+                    test.ok(args[0] === "-e");
+                    callback();
+                }
+            };
+        });
+        
         run.start(function (port) {
             test.ok(port === null);
+            test.done();
         });
     }
 });
