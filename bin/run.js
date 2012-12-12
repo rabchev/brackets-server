@@ -29,10 +29,11 @@ if (commander.options.length === 0) {
             .option("-p, --port <port>", "Specifies TCP <port> for Brackets service. Alternatively, BRACKETS_PORT environment variable can be set. If both are omitted, the first free port in the range of 6000 - 6800 is assigned.")
             .option("-o, --open", "Opens the project in the default web browser. Warning: since Brackets currently supports only Chrome you should set it as your default browser.")
             .option("-i, --install <template>", "Creates new project based on the template specified.")
-            .option("-s, --start", "Starts Brackets after template installation.");
+            .option("-s, --start", "Starts Brackets after template installation.")
+            .option("-f, --force", "Force template installation on none empty directory.");
 }
 
-function startBrackets(port, callback) {
+var startBrackets = function (port, callback) {
     "use strict";
     
     app = connect()
@@ -50,16 +51,17 @@ function startBrackets(port, callback) {
         .listen(port);
     
     console.log(util.format("\n  listening on port %d\n", port));
+    
     if (callback) {
-        callback(port);
+        callback(null, port);
     }
     
     if (commander.open) {
         open("http://localhost:" + port);
     }
-}
+};
 
-function determinePortAndStartBrackets(callback) {
+var determinePortAndStartBrackets = function (callback) {
     "use strict";
     
     var port = commander.port || process.env.BRACKETS_PORT;
@@ -73,7 +75,7 @@ function determinePortAndStartBrackets(callback) {
             startBrackets(port, callback);
         });
     }
-}
+};
 
 // Just a way to mock the required script
 var getInstallScritp = function (scriptPath) {
@@ -82,69 +84,116 @@ var getInstallScritp = function (scriptPath) {
     return require(scriptPath);
 };
 
+var emptyDirectory = function (path, fn) {
+    "use strict";
+    
+    fs.readdir(path, function (err, files) {
+        if (err && "ENOENT" !== err.code) {
+            throw err;
+        }
+        
+        fn(!files || !files.length);
+    });
+};
+
+var copyFiles = function (src, trg, callback) {
+    "use strict";
+    
+    function doCopy() {
+        wrench.copyDirSyncRecursive(src, trg, { excludeHiddenUnix: true });
+        
+        // TODO: [Hack] 
+        //      For some reason the process current working directory is changed to an invalid path after copy.
+        //      Have to investigate this and see if it can be fixed.
+        try {
+            process.cwd();
+        } catch (err) {
+            if (err.code === "ENOENT") {
+                process.chdir(trg);
+            } else {
+                throw err;
+            }
+        }
+        
+        callback(false);
+    }
+    
+    emptyDirectory(trg, function (empty) {
+        if (empty || commander.force) {
+            doCopy();
+        } else {
+            commander.confirm('destination is not empty, continue? ', function (ok) {
+                if (ok) {
+                    doCopy();
+                } else {
+                    callback(true);
+                }
+            });
+        }
+    });
+};
+
 function installTemplate(callback) {
     "use strict";
     
     var args = commander.install.split(" "),
-        sourceDir = path.join(__dirname, "templates", args[0]),
-        destDir = process.cwd();
-        
-    wrench.copyDirSyncRecursive(sourceDir, process.cwd(), { excludeHiddenUnix: true });
+        src = path.join(__dirname, "templates", args[0]),
+        trg = process.cwd();
     
-    // TODO: [Hack] 
-    //          For some reason the process current working directory is changed to an invalid path after copy.
-    //          Have to investigate this and see if it can be fixed.
-    try {
-        process.cwd();
-    } catch (err) {
-        if (err.code === "ENOENT") {
-            process.chdir(destDir);
-        } else {
-            throw err;
-        }
-    }
-    
-    function exit() {
-        console.log("Installation complete!");
-        if (commander.start || commander.open) {
-            determinePortAndStartBrackets(callback);
-        } else {
-            callback(null);
-        }
-    }
-    
-    var conf = nopt(types, shorthands);
-    conf._exit = true;
-    npm.load(conf, function (err) {
+    function exit(err) {
         if (err) {
-            throw err;
-        }
-            
-        npm.commands.install([], function (err, installed) {
-            if (err) {
-                throw err;
+            console.log(err);
+            if (callback) {
+                callback(err);
             }
-            
-            var script = path.join(sourceDir, ".bin");
-            fs.exists(script, function (exists) {
-                if (exists === true) {
-                    var scrObj = getInstallScritp(script);
-                    if (scrObj && scrObj.install) {
-                        args.splice(0, 1);
-                        
-                        scrObj.install(args, function (err) {
-                            if (err) {
-                                throw err;
-                            }
-                            
-                            exit();
-                        });
-                    }
-                } else {
-                    exit();
+        } else {
+            console.log("Installation complete!");
+            if (commander.start || commander.open) {
+                determinePortAndStartBrackets(callback);
+            } else if (callback) {
+                callback(err);
+            }
+        }
+    }
+    
+    copyFiles(src, trg, function (abort) {
+        if (abort) {
+            exit(new Error("Installation aborted."));
+        } else {
+            var conf = nopt(types, shorthands);
+            conf._exit = true;
+            npm.load(conf, function (err) {
+                if (err) {
+                    throw err;
                 }
+                    
+                npm.commands.install([], function (err, installed) {
+                    if (err) {
+                        throw err;
+                    }
+                    
+                    var script = path.join(src, ".bin");
+                    fs.exists(script, function (exists) {
+                        if (exists === true) {
+                            var scrObj = getInstallScritp(script);
+                            if (scrObj && scrObj.install) {
+                                args.splice(0, 1);
+                                
+                                scrObj.install(args, function (err) {
+                                    if (err) {
+                                        throw err;
+                                    }
+                                    
+                                    exit();
+                                });
+                            }
+                        } else {
+                            exit();
+                        }
+                    });
+                });
             });
-        });
+        }
     });
 }
 

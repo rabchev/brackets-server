@@ -1,6 +1,8 @@
 /*jslint plusplus: true, devel: true, nomen: true, node: true, vars: true, indent: 4, maxerr: 50 */
 /*global require, exports, module */
 
+debugger;
+
 var testCase    = require("nodeunit").testCase,
     http        = require("http"),
     fs          = require("fs"),
@@ -24,7 +26,7 @@ function testResponse(test, verifyPort) {
     var run = rewire("../bin/run");
     resetCommander();
         
-    run.start(function (port) {
+    run.start(function (err, port) {
         verifyPort(port);
         
         var dsp = false;
@@ -83,6 +85,7 @@ module.exports = testCase({
         
         testResponse(test, function (port) {
             test.equal(port, 15456);
+            delete process.env.BRACKETS_PORT;
         });
     },
     "Run on Specific Port": function (test) {
@@ -116,7 +119,7 @@ module.exports = testCase({
     "Tetst -op Parameters": function (test) {
         "use strict";
         
-        test.expect(2);
+        test.expect(3);
         
         var orgArgv = process.argv,
             run     = rewire("../bin/run");
@@ -131,7 +134,8 @@ module.exports = testCase({
             test.done();
         });
         
-        run.start(function (port) {
+        run.start(function (err, port) {
+            test.ok(!err);
             test.equal(port, 18658);
         });
     },
@@ -155,14 +159,14 @@ module.exports = testCase({
             test.done();
         });
         
-        run.start(function (argPort) {
+        run.start(function (err, argPort) {
             port = argPort;
         });
     },
     "Tetst Template Installation": function (test) {
         "use strict";
         
-        test.expect(9);
+        test.expect(10);
         
         var orgArgv = process.argv,
             run     = rewire("../bin/run"),
@@ -197,6 +201,10 @@ module.exports = testCase({
             exists: function (file, callback) {
                 test.equal(file, path.join(srcDir, ".bin"));
                 callback(true);
+            },
+            readdir: function (path, callback) {
+                // Simulate empty directory
+                callback();
             }
         });
         
@@ -211,8 +219,9 @@ module.exports = testCase({
             };
         });
         
-        run.start(function (port) {
-            test.ok(port === null);
+        run.start(function (err, port) {
+            test.ok(err === undefined);
+            test.ok(port === undefined);
             test.done();
         });
     }
