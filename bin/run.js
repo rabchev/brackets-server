@@ -100,32 +100,15 @@ var emptyDirectory = function (path, fn) {
 var copyFiles = function (src, trg, callback) {
     "use strict";
     
-    function doCopy() {
-        wrench.copyDirSyncRecursive(src, trg, { excludeHiddenUnix: true });
-        
-        // TODO: [Hack] 
-        //      For some reason the process current working directory is changed to an invalid path after copy.
-        //      Have to investigate this and see if it can be fixed.
-        try {
-            process.cwd();
-        } catch (err) {
-            if (err.code === "ENOENT") {
-                process.chdir(trg);
-            } else {
-                throw err;
-            }
-        }
-        
-        callback(false);
-    }
-    
     emptyDirectory(trg, function (empty) {
         if (empty || commander.force) {
-            doCopy();
+            wrench.copyDirSyncRecursive(src, trg, { excludeHiddenUnix: true, preserve: true });
+            callback(false);
         } else {
-            commander.confirm(Strings.CONFIRM_DELETE_DIR, function (ok) {
+            commander.confirm("\n\n" + Strings.CONFIRM_DELETE_DIR + " ", function (ok) {
                 if (ok) {
-                    doCopy();
+                    wrench.copyDirSyncRecursive(src, trg, { excludeHiddenUnix: true, preserve: true });
+                    callback(false);
                 } else {
                     callback(true);
                 }
@@ -143,9 +126,11 @@ function installTemplate(callback) {
     
     function exit(err) {
         if (err) {
-            console.log(err);
+            console.log(err.message);
             if (callback) {
                 callback(err);
+            } else {
+                process.exit();
             }
         } else {
             console.log(Strings.INSTALLATION_COMPLETE);
@@ -153,6 +138,8 @@ function installTemplate(callback) {
                 determinePortAndStartBrackets(callback);
             } else if (callback) {
                 callback(err);
+            } else {
+                process.exit();
             }
         }
     }
