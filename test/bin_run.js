@@ -163,10 +163,10 @@ module.exports = testCase({
             port = argPort;
         });
     },
-    "Tetst Template Installation": function (test) {
+    "Tetst Template Installation With Script": function (test) {
         "use strict";
         
-        test.expect(10);
+        test.expect(12);
         
         var orgArgv = process.argv,
             run     = rewire("../bin/run"),
@@ -182,6 +182,7 @@ module.exports = testCase({
                 test.equal(src, srcDir);
                 test.equal(dst, dstDir);
                 test.ok(opt.excludeHiddenUnix);
+                test.ok(opt.preserve);
             }
         });
         
@@ -203,6 +204,8 @@ module.exports = testCase({
                 callback(true);
             },
             readdir: function (path, callback) {
+                test.equal(dstDir, path);
+                
                 // Simulate empty directory
                 callback();
             }
@@ -217,6 +220,60 @@ module.exports = testCase({
                     callback();
                 }
             };
+        });
+        
+        run.start(function (err, port) {
+            test.ok(err === undefined);
+            test.ok(port === undefined);
+            test.done();
+        });
+    },
+    "Tetst Template Installation Without Script": function (test) {
+        "use strict";
+        
+        test.expect(6);
+        
+        var orgArgv = process.argv,
+            run     = rewire("../bin/run"),
+            srcDir = path.join(__dirname, "../bin/templates/plain-connect"),
+            dstDir = process.cwd();
+        
+        resetCommander();
+        
+        process.argv = ["node", "../lib/node_modules/brackets/bin/run", "-i", "plain-connect"];
+        
+        run.__set__("wrench", {
+            copyDirSyncRecursive: function (src, dst, opt) {
+                test.equal(src, srcDir);
+                test.equal(dst, dstDir);
+                test.ok(opt.excludeHiddenUnix);
+                test.ok(opt.preserve);
+            }
+        });
+        
+        run.__set__("npm", {
+            load: function (conf, callback) {
+                callback();
+            },
+            commands: {
+                install: function (args, callback) {
+                    callback(null, {});
+                }
+            }
+        });
+        
+        run.__set__("fs", {
+            exists: function (file, callback) {
+                callback(false);
+            },
+            readdir: function (path, callback) {
+                // Simulate empty directory
+                callback();
+            }
+        });
+        
+        run.__set__("getInstallScritp", function (scriptPath) {
+            throw new Error("getInstallScritp should not be called.");
         });
         
         run.start(function (err, port) {

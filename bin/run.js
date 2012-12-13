@@ -51,7 +51,9 @@ var startBrackets = function (port, callback) {
         })
         .listen(port);
     
-    console.log(util.format(Strings.LISTENING_PORT, port));
+    if (process.env.NODE_ENV !== "test") {
+        console.log(util.format(Strings.LISTENING_PORT, port));
+    }
     
     if (callback) {
         callback(null, port);
@@ -133,7 +135,9 @@ function installTemplate(callback) {
                 process.exit();
             }
         } else {
-            console.log(Strings.INSTALLATION_COMPLETE);
+            if (process.env.NODE_ENV !== "test") {
+                console.log(Strings.INSTALLATION_COMPLETE);
+            }
             if (commander.start || commander.open) {
                 determinePortAndStartBrackets(callback);
             } else if (callback) {
@@ -203,7 +207,10 @@ exports.stop = function () {
     if (app) {
         app.close();
         app = null;
-        console.log(Strings.IDE_SERVER_STOPPED);
+        
+        if (process.env.NODE_ENV !== "test") {
+            console.log(Strings.IDE_SERVER_STOPPED);
+        }
     }
 };
 
