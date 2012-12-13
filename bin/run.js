@@ -11,6 +11,7 @@ var connect     = require("connect"),
     fs          = require("fs"),
     brackets    = require("../"),
     pkg         = require("../package.json"),
+    Strings     = require("../lib/strings.js"),
     open        = require("open"),
     wrench      = require("wrench"),
     path        = require("path"),
@@ -26,11 +27,11 @@ var connect     = require("connect"),
 if (commander.options.length === 0) {
     commander
             .version(pkg.version)
-            .option("-p, --port <port>", "Specifies TCP <port> for Brackets service. Alternatively, BRACKETS_PORT environment variable can be set. If both are omitted, the first free port in the range of 6000 - 6800 is assigned.")
-            .option("-o, --open", "Opens the project in the default web browser. Warning: since Brackets currently supports only Chrome you should set it as your default browser.")
-            .option("-i, --install <template>", "Creates new project based on the template specified.")
-            .option("-s, --start", "Starts Brackets after template installation.")
-            .option("-f, --force", "Force template installation on none empty directory.");
+            .option("-p, --port <port>", Strings.ARGV_PROT)
+            .option("-o, --open", Strings.ARGV_OPEN)
+            .option("-i, --install <template>", Strings.ARGV_INSTALL)
+            .option("-s, --start", Strings.ARGV_START)
+            .option("-f, --force", Strings.ARGV_FORCE);
 }
 
 var startBrackets = function (port, callback) {
@@ -50,7 +51,7 @@ var startBrackets = function (port, callback) {
         })
         .listen(port);
     
-    console.log(util.format("\n  listening on port %d\n", port));
+    console.log(util.format(Strings.LISTENING_PORT, port));
     
     if (callback) {
         callback(null, port);
@@ -122,7 +123,7 @@ var copyFiles = function (src, trg, callback) {
         if (empty || commander.force) {
             doCopy();
         } else {
-            commander.confirm('destination is not empty, continue? ', function (ok) {
+            commander.confirm(Strings.CONFIRM_DELETE_DIR, function (ok) {
                 if (ok) {
                     doCopy();
                 } else {
@@ -147,7 +148,7 @@ function installTemplate(callback) {
                 callback(err);
             }
         } else {
-            console.log("Installation complete!");
+            console.log(Strings.INSTALLATION_COMPLETE);
             if (commander.start || commander.open) {
                 determinePortAndStartBrackets(callback);
             } else if (callback) {
@@ -158,7 +159,7 @@ function installTemplate(callback) {
     
     copyFiles(src, trg, function (abort) {
         if (abort) {
-            exit(new Error("Installation aborted."));
+            exit(new Error(Strings.INSTALLATION_ABORTED));
         } else {
             var conf = nopt(types, shorthands);
             conf._exit = true;
@@ -215,7 +216,7 @@ exports.stop = function () {
     if (app) {
         app.close();
         app = null;
-        console.log("Brackets stopped.");
+        console.log(Strings.IDE_SERVER_STOPPED);
     }
 };
 
