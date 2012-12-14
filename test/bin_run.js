@@ -9,6 +9,7 @@ var testCase    = require("nodeunit").testCase,
     path        = require("path"),
     commander   = require("commander"),
     rewire      = require("rewire"),
+    Strings     = require("../lib/strings.js"),
     appUrl      = "http://localhost:";
 
 function resetCommander() {
@@ -18,6 +19,7 @@ function resetCommander() {
     delete commander.open;
     delete commander.install;
     delete commander.start;
+    delete commander.force;
 }
 
 function testResponse(test, verifyPort) {
@@ -25,6 +27,8 @@ function testResponse(test, verifyPort) {
     
     var run = rewire("../bin/run");
     resetCommander();
+    
+    run.__set__("log", function (message) {});
         
     run.start(function (err, port) {
         verifyPort(port);
@@ -127,6 +131,9 @@ module.exports = testCase({
         resetCommander();
         
         process.argv = ["node", "../lib/node_modules/brackets/bin/run", "-op", "18658"];
+        
+        run.__set__("log", function (message) {});
+        
         run.__set__("open", function (url) {
             test.equal(url, "http://localhost:18658");
             run.stop();
@@ -152,6 +159,8 @@ module.exports = testCase({
         
         process.argv = ["node", "../lib/node_modules/brackets/bin/run", "--open"];
         
+        run.__set__("log", function (message) {});
+        
         run.__set__("open", function (url) {
             test.equal(url, "http://localhost:" + port);
             run.stop();
@@ -163,7 +172,7 @@ module.exports = testCase({
             port = argPort;
         });
     },
-    "Tetst Template Installation With Script": function (test) {
+    "Template Installation With Script": function (test) {
         "use strict";
         
         test.expect(12);
@@ -176,6 +185,8 @@ module.exports = testCase({
         resetCommander();
         
         process.argv = ["node", "../lib/node_modules/brackets/bin/run", "-i", "express -e"];
+        
+        run.__set__("log", function (message) {});
         
         run.__set__("wrench", {
             copyDirSyncRecursive: function (src, dst, opt) {
@@ -228,10 +239,10 @@ module.exports = testCase({
             test.done();
         });
     },
-    "Tetst Template Installation Without Script": function (test) {
+    "Template Installation Without Script": function (test) {
         "use strict";
         
-        test.expect(6);
+        test.expect(7);
         
         var orgArgv = process.argv,
             run     = rewire("../bin/run"),
@@ -241,6 +252,118 @@ module.exports = testCase({
         resetCommander();
         
         process.argv = ["node", "../lib/node_modules/brackets/bin/run", "-i", "plain-connect"];
+        
+        run.__set__("log", function (message) {});
+        
+        run.__set__("wrench", {
+            copyDirSyncRecursive: function (src, dst, opt) {
+                test.equal(src, srcDir);
+                test.equal(dst, dstDir);
+                test.ok(opt.excludeHiddenUnix);
+                test.ok(opt.preserve);
+            }
+        });
+        
+        run.__set__("npm", {
+            load: function (conf, callback) {
+                callback();
+            },
+            commands: {
+                install: function (args, callback) {
+                    callback(null, {});
+                }
+            }
+        });
+        
+        run.__set__("fs", {
+            exists: function (file, callback) {
+                test.equal(file, path.join(srcDir, ".bin"));
+                
+                // Simulate nonexistent .bin directory
+                callback(false);
+            },
+            readdir: function (path, callback) {
+                // Simulate empty directory
+                callback();
+            }
+        });
+        
+        run.__set__("getInstallScritp", function (scriptPath) {
+            throw new Error("getInstallScritp should not be called.");
+        });
+        
+        run.start(function (err, port) {
+            test.ok(err === undefined);
+            test.ok(port === undefined);
+            test.done();
+        });
+    },
+    "Template Installation on Nonepty Directory - Cancel": function (test) {
+        "use strict";
+        
+        test.expect(4);
+        
+        var orgArgv = process.argv,
+            run     = rewire("../bin/run"),
+            srcDir = path.join(__dirname, "../bin/templates/plain-connect"),
+            dstDir = process.cwd();
+        
+        run.__set__("log", function (message) {});
+        
+        run.__set__("wrench", {
+            copyDirSyncRecursive: function (src, dst, opt) {
+                throw new Error("wrench.copyDirSyncRecursive should not be called.");
+            }
+        });
+        
+        run.__set__("npm", {
+            load: function (conf, callback) {
+                throw new Error("npm.load should not be called.");
+            },
+            commands: {
+                install: function (args, callback) {
+                    throw new Error("npm.commands.install should not be called.");
+                }
+            }
+        });
+        
+        run.__set__("fs", {
+            exists: function (file, callback) {
+                callback(false);
+            },
+            readdir: function (path, callback) {
+                // Simulate nonempty directory
+                callback(null, ["file-1", "file-2", "file-3"]);
+            }
+        });
+        
+        run.__set__("commander", {
+            install: "plain-connect",
+            parse: function () {},
+            confirm: function (message, callback) {
+                test.equal("\n\n" + Strings.CONFIRM_NONEMPTY_DIR + " ", message);
+                callback(false);
+            }
+        });
+        
+        run.start(function (err, port) {
+            test.ok(err instanceof Error);
+            test.ok(port === undefined);
+            test.equal("Installation aborted.", err.message);
+            test.done();
+        });
+    },
+    "Template Installation on Nonepty Directory - Continue": function (test) {
+        "use strict";
+        
+        test.expect(7);
+        
+        var orgArgv = process.argv,
+            run     = rewire("../bin/run"),
+            srcDir = path.join(__dirname, "../bin/templates/plain-connect"),
+            dstDir = process.cwd();
+        
+        run.__set__("log", function (message) {});
         
         run.__set__("wrench", {
             copyDirSyncRecursive: function (src, dst, opt) {
@@ -267,13 +390,18 @@ module.exports = testCase({
                 callback(false);
             },
             readdir: function (path, callback) {
-                // Simulate empty directory
-                callback();
+                // Simulate nonempty directory
+                callback(null, ["file-1", "file-2", "file-3"]);
             }
         });
         
-        run.__set__("getInstallScritp", function (scriptPath) {
-            throw new Error("getInstallScritp should not be called.");
+        run.__set__("commander", {
+            install: "plain-connect",
+            parse: function () {},
+            confirm: function (message, callback) {
+                test.equal("\n\n" + Strings.CONFIRM_NONEMPTY_DIR + " ", message);
+                callback(true);
+            }
         });
         
         run.start(function (err, port) {
@@ -281,5 +409,94 @@ module.exports = testCase({
             test.ok(port === undefined);
             test.done();
         });
+    },
+    "Template Installation on Nonepty Directory with -f (--force) Option": function (test) {
+        "use strict";
+        
+        test.expect(6);
+        
+        var orgArgv = process.argv,
+            run     = rewire("../bin/run"),
+            srcDir = path.join(__dirname, "../bin/templates/plain-connect"),
+            dstDir = process.cwd();
+        
+        resetCommander();
+        
+        process.argv = ["node", "../lib/node_modules/brackets/bin/run", "-i", "plain-connect", "-f"];
+        
+        run.__set__("log", function (message) {});
+        
+        run.__set__("wrench", {
+            copyDirSyncRecursive: function (src, dst, opt) {
+                test.equal(src, srcDir);
+                test.equal(dst, dstDir);
+                test.ok(opt.excludeHiddenUnix);
+                test.ok(opt.preserve);
+            }
+        });
+        
+        run.__set__("npm", {
+            load: function (conf, callback) {
+                callback();
+            },
+            commands: {
+                install: function (args, callback) {
+                    callback(null, {});
+                }
+            }
+        });
+        
+        run.__set__("fs", {
+            exists: function (file, callback) {
+                callback(false);
+            },
+            readdir: function (path, callback) {
+                // Simulate nonempty directory
+                callback(null, ["file-1", "file-2", "file-3"]);
+            }
+        });
+        
+        run.start(function (err, port) {
+            test.ok(err === undefined);
+            test.ok(port === undefined);
+            test.done();
+        });
+    },
+    "Run Without Arguments - No Callback": function (test) {
+        "use strict";
+        
+        test.expect(3);
+        
+        var run = rewire("../bin/run");
+        resetCommander();
+        process.argv = ["node", "../lib/node_modules/brackets/bin/run"];
+        
+        run.__set__("log", function (message) {
+            test.ok(message);
+            test.ok(message.indexOf(Strings.LISTENING_PORT) === 0);
+        });
+        
+        run.__set__("open", function (url) {
+            throw new Error("open should not be called");
+        });
+        
+        var useCount    = 0,
+            connect     = function () {
+                return {
+                    use: function () {
+                        useCount++;
+                        return connect;
+                    },
+                    listen: function (port) {
+                        test.equal(3, useCount);
+                        test.done();
+                    }
+                };
+            };
+        connect.favicon = function () {};
+        
+        run.__set__("connect", connect);
+            
+        run.start();
     }
 });

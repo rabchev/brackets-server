@@ -34,6 +34,13 @@ if (commander.options.length === 0) {
             .option("-f, --force", Strings.ARGV_FORCE);
 }
 
+// This method can be mocked during tests to suppress logging or test log messages
+var log = function (message) {
+    "use strict";
+    
+    console.log(message);
+};
+
 var startBrackets = function (port, callback) {
     "use strict";
     
@@ -51,9 +58,7 @@ var startBrackets = function (port, callback) {
         })
         .listen(port);
     
-    if (process.env.NODE_ENV !== "test") {
-        console.log(util.format(Strings.LISTENING_PORT, port));
-    }
+    log(util.format(Strings.LISTENING_PORT, port));
     
     if (callback) {
         callback(null, port);
@@ -107,7 +112,7 @@ var copyFiles = function (src, trg, callback) {
             wrench.copyDirSyncRecursive(src, trg, { excludeHiddenUnix: true, preserve: true });
             callback(false);
         } else {
-            commander.confirm("\n\n" + Strings.CONFIRM_DELETE_DIR + " ", function (ok) {
+            commander.confirm("\n\n" + Strings.CONFIRM_NONEMPTY_DIR + " ", function (ok) {
                 if (ok) {
                     wrench.copyDirSyncRecursive(src, trg, { excludeHiddenUnix: true, preserve: true });
                     callback(false);
@@ -128,16 +133,15 @@ function installTemplate(callback) {
     
     function exit(err) {
         if (err) {
-            console.log(err.message);
+            log(err.message);
             if (callback) {
                 callback(err);
             } else {
                 process.exit();
             }
         } else {
-            if (process.env.NODE_ENV !== "test") {
-                console.log(Strings.INSTALLATION_COMPLETE);
-            }
+            log(Strings.INSTALLATION_COMPLETE);
+            
             if (commander.start || commander.open) {
                 determinePortAndStartBrackets(callback);
             } else if (callback) {
@@ -208,9 +212,7 @@ exports.stop = function () {
         app.close();
         app = null;
         
-        if (process.env.NODE_ENV !== "test") {
-            console.log(Strings.IDE_SERVER_STOPPED);
-        }
+        log(Strings.IDE_SERVER_STOPPED);
     }
 };
 
