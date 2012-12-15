@@ -13,6 +13,6 @@ try {
 }
 
 process.chdir(__dirname);
-reporter.run(["./test-web-app.js",
-              "./bin_run.js"
+reporter.run(["./ide-server.js",
+              "./cli.js"
              ]);

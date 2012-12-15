@@ -1,8 +1,6 @@
 /*jslint plusplus: true, devel: true, nomen: true, node: true, vars: true, indent: 4, maxerr: 50 */
 /*global require, exports, module */
 
-debugger;
-
 var testCase    = require("nodeunit").testCase,
     http        = require("http"),
     fs          = require("fs"),
@@ -473,7 +471,8 @@ module.exports = testCase({
         
         run.__set__("log", function (message) {
             test.ok(message);
-            test.ok(message.indexOf(Strings.LISTENING_PORT) === 0);
+            test.ok(message.indexOf("listening on port") !== -1);
+            test.done();
         });
         
         run.__set__("open", function (url) {
@@ -485,11 +484,10 @@ module.exports = testCase({
                 return {
                     use: function () {
                         useCount++;
-                        return connect;
+                        return this;
                     },
                     listen: function (port) {
                         test.equal(3, useCount);
-                        test.done();
                     }
                 };
             };
