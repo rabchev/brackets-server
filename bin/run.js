@@ -12,6 +12,7 @@ var connect     = require("connect"),
     brackets    = require("../"),
     pkg         = require("../package.json"),
     Strings     = require("../lib/strings.js"),
+    Config      = require("../lib/config.js"),
     open        = require("open"),
     wrench      = require("wrench"),
     path        = require("path"),
@@ -27,11 +28,11 @@ var connect     = require("connect"),
 if (commander.options.length === 0) {
     commander
             .version(pkg.version)
-            .option("-p, --port <port>", Strings.ARGV_PROT)
             .option("-o, --open", Strings.ARGV_OPEN)
             .option("-i, --install <template>", Strings.ARGV_INSTALL)
             .option("-s, --start", Strings.ARGV_START)
-            .option("-f, --force", Strings.ARGV_FORCE);
+            .option("-f, --force", Strings.ARGV_FORCE)
+            .option("-p, --IDE.port <port>", Strings.ARGV_PROT);
 }
 
 // This method can be mocked during tests to suppress logging or test log messages
@@ -72,11 +73,11 @@ var startBrackets = function (port, callback) {
 var determinePortAndStartBrackets = function (callback) {
     "use strict";
     
-    var port = commander.port || process.env.BRACKETS_PORT;
-    if (port) {
+    var ide = Config.IDE;
+    if (ide.port && ide.port !== "*") {
         startBrackets(port, callback);
     } else {
-        netutil.findFreePort(6000, 6800, "localhost", function (err, port) {
+        netutil.findFreePort(ide.portRange.min, ide.portRange.max, "localhost", function (err, port) {
             if (err) {
                 throw err;
             }

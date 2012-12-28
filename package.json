@@ -27,7 +27,8 @@
         "nopt": "*",
         "node-inspector": "*",
         "supervisor": "*",
-        "socket.io": "*"
+        "socket.io": "*",
+        "nconf": "*"
     },
     "devDependencies": {
         "nodeunit": "*",

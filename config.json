@@ -1,0 +1,23 @@
+{
+    "IDE": {
+        "port": "*",
+        "portRange": {
+            "min": "46100",
+            "max": "46900"
+        }
+    },
+    "live": {
+        "port": "*",
+        "portRange": {
+            "min": "44100",
+            "max": "44900"
+        }
+    },
+    "debugger": {
+        "port": "8080",
+        "portRange": {
+            "min": "45100",
+            "max": "45900"
+        }
+    }
+}

@@ -75,7 +75,7 @@ module.exports = testCase({
         
         testResponse(test, function (port) {
             test.ok(port);
-            test.ok(port >= 6000 && port <= 6800);
+            test.ok(port >= 46100 && port <= 46900);
         });
     },
     "Test Environment Port": function (test) {
@@ -83,7 +83,7 @@ module.exports = testCase({
         
         test.expect(4);
         
-        process.env.BRACKETS_PORT = 15456;
+        process.env.IDE__port = 15456;
         
         testResponse(test, function (port) {
             test.equal(port, 15456);
