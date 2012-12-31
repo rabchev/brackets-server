@@ -1,3 +1,6 @@
 [submodule "brackets-src"]
 	path = brackets-src
 	url = https://github.com/rabchev/node-brackets-src.git
+[submodule "node_modules/supervisor"]
+	path = node_modules/supervisor
+	url = https://github.com/rabchev/node-supervisor.git

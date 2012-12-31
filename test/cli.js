@@ -20,13 +20,68 @@ function resetCommander() {
     delete commander.force;
 }
 
+function getConfig() {
+    "use strict";
+    
+    var nconf = rewire("nconf");
+
+    nconf
+        .argv()
+        .env({
+            separator: "__",
+            whitelist: [
+                "IDE__port",
+                "IDE__portRange__min",
+                "IDE__portRange__max",
+                "live__port",
+                "live__portRange__min",
+                "live__portRange__max",
+                "debugger__port",
+                "debugger__portRange__min",
+                "debugger__portRange__max"
+            ]
+        })
+        .file({ file: '../config.json' })
+        .defaults({
+            "IDE": {
+                "port": "*",
+                "portRange": {
+                    "min": "46100",
+                    "max": "46900"
+                }
+            },
+            "live": {
+                "port": "*",
+                "portRange": {
+                    "min": "44100",
+                    "max": "44900"
+                }
+            },
+            "debugger": {
+                "port": "8080",
+                "portRange": {
+                    "min": "45100",
+                    "max": "45900"
+                }
+            }
+        });
+    
+    return {
+        IDE: nconf.get("IDE"),
+        live: nconf.get("live"),
+        debug: nconf.get("debugger")
+    };
+}
+
 function testResponse(test, verifyPort) {
     "use strict";
     
-    var run = rewire("../bin/run");
     resetCommander();
     
+    var run = rewire("../bin/run");
+    
     run.__set__("log", function (message) {});
+    run.__set__("Config", getConfig());
         
     run.start(function (err, port) {
         verifyPort(port);
@@ -87,7 +142,7 @@ module.exports = testCase({
         
         testResponse(test, function (port) {
             test.equal(port, 15456);
-            delete process.env.BRACKETS_PORT;
+            delete process.env.IDE__port;
         });
     },
     "Run on Specific Port": function (test) {
@@ -96,7 +151,7 @@ module.exports = testCase({
         test.expect(4);
         
         var orgArgv = process.argv;
-        process.argv = ["node", "../lib/node_modules/brackets/bin/run.js", "-p", "18658"];
+        process.argv = ["node", "../lib/node_modules/brackets/bin/run.js", "--IDE.port", "18658"];
         
         testResponse(test, function (port) {
             test.equal(port, 18658);
@@ -118,9 +173,9 @@ module.exports = testCase({
             test.done();
         });
     },
-    "Tetst -op Parameters": function (test) {
+    "Tetst -o --IDE.port Parameters": function (test) {
         "use strict";
-        
+        debugger;
         test.expect(3);
         
         var orgArgv = process.argv,
@@ -128,10 +183,10 @@ module.exports = testCase({
         
         resetCommander();
         
-        process.argv = ["node", "../lib/node_modules/brackets/bin/run", "-op", "18658"];
+        process.argv = ["node", "../lib/node_modules/brackets/bin/run", "-o", "--IDE.port", "18658"];
         
         run.__set__("log", function (message) {});
-        
+        run.__set__("Config", getConfig());
         run.__set__("open", function (url) {
             test.equal(url, "http://localhost:18658");
             run.stop();

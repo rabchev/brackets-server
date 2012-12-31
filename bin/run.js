@@ -32,7 +32,15 @@ if (commander.options.length === 0) {
             .option("-i, --install <template>", Strings.ARGV_INSTALL)
             .option("-s, --start", Strings.ARGV_START)
             .option("-f, --force", Strings.ARGV_FORCE)
-            .option("-p, --IDE.port <port>", Strings.ARGV_PROT);
+            .option("--IDE.port <port>", Strings.ARGV_IDE_PROT)
+            .option("--IDE.portRange.min <port>", Strings.ARGV_IDE_PROT_MIN)
+            .option("--IDE.portRange.max <port>", Strings.ARGV_IDE_PROT_MAX)
+            .option("--live.port <port>", Strings.ARGV_LIVE_PROT)
+            .option("--live.portRange.min <port>", Strings.ARGV_LIVE_PROT_MIN)
+            .option("--live.portRange.max <port>", Strings.ARGV_LIVE_PROT_MAX)
+            .option("--debugger.port <port>", Strings.ARGV_DEBUG_PROT)
+            .option("--debugger.portRange.min <port>", Strings.ARGV_DEBUG_PROT_MIN)
+            .option("--debugger.portRange.max <port>", Strings.ARGV_DEBUG_PROT_MAX)
 }
 
 // This method can be mocked during tests to suppress logging or test log messages
@@ -75,9 +83,9 @@ var determinePortAndStartBrackets = function (callback) {
     
     var ide = Config.IDE;
     if (ide.port && ide.port !== "*") {
-        startBrackets(port, callback);
+        startBrackets((+ide.port), callback);
     } else {
-        netutil.findFreePort(ide.portRange.min, ide.portRange.max, "localhost", function (err, port) {
+        netutil.findFreePort((+ide.portRange.min), (+ide.portRange.max), "localhost", function (err, port) {
             if (err) {
                 throw err;
             }

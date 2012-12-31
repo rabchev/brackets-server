@@ -25,8 +25,7 @@
         "semver": "*",
         "ini": "*",
         "nopt": "*",
-        "node-inspector": "*",
-        "supervisor": "*",
+        "inspector": "*",
         "socket.io": "*",
         "nconf": "*"
     },
