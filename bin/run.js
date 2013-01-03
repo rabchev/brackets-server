@@ -40,7 +40,7 @@ if (commander.options.length === 0) {
             .option("--live.portRange.max <port>", Strings.ARGV_LIVE_PROT_MAX)
             .option("--debugger.port <port>", Strings.ARGV_DEBUG_PROT)
             .option("--debugger.portRange.min <port>", Strings.ARGV_DEBUG_PROT_MIN)
-            .option("--debugger.portRange.max <port>", Strings.ARGV_DEBUG_PROT_MAX)
+            .option("--debugger.portRange.max <port>", Strings.ARGV_DEBUG_PROT_MAX);
 }
 
 // This method can be mocked during tests to suppress logging or test log messages

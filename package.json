@@ -25,9 +25,10 @@
         "semver": "*",
         "ini": "*",
         "nopt": "*",
-        "inspector": "*",
+        "node-inspector": "*",
         "socket.io": "*",
-        "nconf": "*"
+        "nconf": "*",
+        "underscore": "*"
     },
     "devDependencies": {
         "nodeunit": "*",
