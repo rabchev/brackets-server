@@ -1,14 +1,9 @@
 #!/usr/bin/env node
 
-/*jslint plusplus: true, devel: true, nomen: true, node: true, indent: 4, maxerr: 50 */
-/*global require, exports, module */
-
 var connect     = require("connect"),
     util        = require("util"),
     netutil     = require("netutil"),
     commander   = require("commander"),
-    os          = require("os"),
-    fs          = require("fs"),
     brackets    = require("../"),
     pkg         = require("../package.json"),
     open        = require("open");
@@ -21,9 +16,9 @@ commander
 
 function start(port) {
     "use strict";
-    
+
     connect()
-        .use('/brackets', brackets())
+        .use("/brackets", brackets())
         .use(function (req, res) {
             if (req.url === "/") {
                 res.writeHead(302, {Location: "/brackets/"});
@@ -34,9 +29,9 @@ function start(port) {
             }
         })
         .listen(port);
-    
+
     console.log(util.format("\n  listening on port %d\n", port));
-    
+
     if (commander.open) {
         open("http://localhost:" + port);
     }
@@ -47,7 +42,7 @@ if (commander.port) {
 } else {
     netutil.findFreePort(6000, 6800, "localhost", function (err, port) {
         "use strict";
-        
+
         if (err) {
             throw err;
         }
