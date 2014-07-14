@@ -1,15 +1,15 @@
 {
     "name": "brackets",
     "description": "This module integrates [Adobe Brackets](http://brackets.io/) code editor in Node.js based web applications.",
-    "version": "0.3.0",
+    "version": "0.5.0",
     "author": "Boyan Rabchev <boyan@rabchev.com>",
-    "contributors": [ 
+    "contributors": [
         { "name": "Boyan Rabchev", "email": "boyan@rabchev.com" }
     ],
     "repository": "https://github.com/rabchev/node-brackets-module.git",
-    "main": "index",
+    "main": "./lib/server",
     "preferGlobal": "true",
-    "bin": { 
+    "bin": {
         "brackets": "./bin/run.js",
         "node-brackets": "./bin/run.js"
     },
@@ -22,7 +22,16 @@
         "open": "*"
     },
     "devDependencies": {
-        "nodeunit": "*"
+        "mocha": "*",
+        "chai": "*",
+        "sinon-chai": "*",
+        "supertest": "*",
+        "grunt": "*",
+        "grunt-release": "*",
+        "grunt-shell": "*",
+        "grunt-simple-mocha": "*",
+        "grunt-node-inspector": "*",
+        "grunt-concurrent": "*"
     },
     "keywords": [
         "brackets",
@@ -42,5 +51,16 @@
         "css",
         "ide"
     ],
-    "engines": { "node": ">=0.8.6" }
+    "scripts": {
+        "test": "grunt test"
+    },
+    "bugs": {
+        "email": "boyan@rabchev.com",
+        "url": "https://github.com/rabchev/node-brackets-module/issues"
+    },
+    "license": {
+        "type": "MIT",
+        "url": "http://github.com/rabchev/node-brackets-module/blob/master/LICENSE"
+    },
+    "engines": { "node": ">=0.10" }
 }
