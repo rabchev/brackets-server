@@ -1,7 +1,7 @@
 {
     "search": {
         "scope": "project",
-        "excludeFolders": ["node_modules", "bower_components", "img", "css", "cache", "data"],
+        "excludeFolders": ["node_modules", "brackets-src"],
         "excludeFiles": [".html"]
     }
 }
