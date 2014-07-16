@@ -1,3 +1,5 @@
+// Shell app mock
+
 define(function (require, exports) {
     "use strict";
 
@@ -5,5 +7,5 @@ define(function (require, exports) {
         return "/";
     };
 
-    //exports.getElapsedMilliseconds = true;
+
 });
