@@ -19,7 +19,8 @@
         "wrench": "*",
         "netutil": "*",
         "commander": "*",
-        "open": "*"
+        "open": "*",
+        "socket.io": "*"
     },
     "devDependencies": {
         "mocha": "*",
