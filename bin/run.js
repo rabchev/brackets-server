@@ -1,9 +1,6 @@
 #!/usr/bin/env node
 
-var connect     = require("connect"),
-    util        = require("util"),
-    netutil     = require("netutil"),
-    commander   = require("commander"),
+var commander   = require("commander"),
     brackets    = require("../"),
     pkg         = require("../package.json"),
     open        = require("open");
@@ -14,39 +11,8 @@ commander
     .option("-o, --open", "Opens the project in the default web browser. Warning: since Brackets currently supports only Chrome you should set it as your default browser.")
     .parse(process.argv);
 
-function start(port) {
-    "use strict";
+var app = brackets(commander.port);
 
-    connect()
-        .use("/brackets", brackets())
-        .use(function (req, res) {
-            if (req.url === "/") {
-                res.writeHead(302, {Location: "/brackets/"});
-                res.end();
-            } else {
-                res.writeHead(304);
-                res.end("Not found");
-            }
-        })
-        .listen(port);
-
-    console.log(util.format("\n  listening on port %d\n", port));
-
-    if (commander.open) {
-        open("http://localhost:" + port);
-    }
+if (commander.open) {
+    open("http://localhost:" + app.httpServer.address().port);
 }
-
-if (commander.port) {
-    start(commander.port);
-} else {
-    netutil.findFreePort(6000, 6800, "localhost", function (err, port) {
-        "use strict";
-
-        if (err) {
-            throw err;
-        }
-        start(port);
-    });
-}
-

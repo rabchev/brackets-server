@@ -15,7 +15,6 @@
     },
     "dependencies": {
         "send": "*",
-        "connect": "*",
         "wrench": "*",
         "netutil": "*",
         "commander": "*",
