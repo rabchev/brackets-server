@@ -15,8 +15,7 @@
     },
     "dependencies": {
         "send": "*",
-        "wrench": "*",
-        "netutil": "*",
+        "mkdirp": "*",
         "commander": "*",
         "open": "*",
         "socket.io": "*"
