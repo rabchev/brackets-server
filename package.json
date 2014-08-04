@@ -16,6 +16,7 @@
     "dependencies": {
         "send": "*",
         "mkdirp": "*",
+        "rimraf": "*",
         "commander": "*",
         "open": "*",
         "socket.io": "*"
