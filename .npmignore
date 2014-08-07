@@ -10,3 +10,4 @@ jsdoc.json
 
 brackets-src/
 !brackets-src/src/
+brackets-ext

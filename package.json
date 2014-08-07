@@ -31,7 +31,8 @@
         "grunt-shell": "*",
         "grunt-simple-mocha": "*",
         "grunt-node-inspector": "*",
-        "grunt-concurrent": "*"
+        "grunt-concurrent": "*",
+        "grunt-contrib-requirejs": "*"
     },
     "keywords": [
         "brackets",
