@@ -32,7 +32,9 @@
         "grunt-simple-mocha": "*",
         "grunt-node-inspector": "*",
         "grunt-concurrent": "*",
-        "grunt-contrib-requirejs": "*"
+        "grunt-contrib-requirejs": "*",
+        "grunt-contrib-compress": "*",
+        "grunt-replace": "*"
     },
     "keywords": [
         "brackets",

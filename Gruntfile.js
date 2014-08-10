@@ -1,28 +1,28 @@
 /*jshint -W106 */
 
 "use strict";
-debugger;
+
 var fs = require("fs"),
     _replace = {
-    // HACK: For in browser loading we need to replace file system implementation very early to avoid exceptions.
-//    "main": {
-//        match: "filesystem/impls/appshell/AppshellFileSystem",
-//        value: "filesystem/impls/socket-io-fs"
-//    },
-    // HACK: 1. We have to mock shell app.
-    // HACK: 2. Brackets inBrowser behaves very differently, that's why we have to fake it.
-    // HACK: 3. We need the menus in the Browser.
-    // HACK: 4/5. Brackets extension registry services don't allow CORS, that's why we have to proxy the requests.
-    "utils/Global": {
-        match: "global.brackets.app = {};",
-        value: "global.brackets.app = require(\"hacks.app\"); global.brackets.inBrowser = false; global.brackets.nativeMenus = false; global.brackets.config.extension_registry = '/brackets/s3.amazonaws.com/extend.brackets/registry.json'; global.brackets.config.extension_url = '/brackets/s3.amazonaws.com/extend.brackets/{0}/{0}-{1}.zip';"
-    },
-    // HACK: Remove warning dialog about Brackets not been ready for browsers.
-    "brackets": {
-        match: /\/\/ Let the user know Brackets doesn't run in a web browser yet\s+if \(brackets.inBrowser\) {/,
-        value: "if (false) {"
-    }
-};
+        // HACK: For in browser loading we need to replace file system implementation very early to avoid exceptions.
+        //    "main": {
+        //        match: "filesystem/impls/appshell/AppshellFileSystem",
+        //        value: "filesystem/impls/socket-io-fs"
+        //    },
+        // HACK: 1. We have to mock shell app.
+        // HACK: 2. Brackets inBrowser behaves very differently, that's why we have to fake it.
+        // HACK: 3. We need the menus in the Browser.
+        // HACK: 4/5. Brackets extension registry services don't allow CORS, that's why we have to proxy the requests.
+        "utils/Global": {
+            match: "global.brackets.app = {};",
+            value: "global.brackets.app = require(\"hacks.app\"); global.brackets.inBrowser = false; global.brackets.nativeMenus = false; global.brackets.config.extension_registry = '/brackets/s3.amazonaws.com/extend.brackets/registry.json'; global.brackets.config.extension_url = '/brackets/s3.amazonaws.com/extend.brackets/{0}/{0}-{1}.zip';"
+        },
+        // HACK: Remove warning dialog about Brackets not been ready for browsers.
+        "brackets": {
+            match: /\/\/ Let the user know Brackets doesn't run in a web browser yet\s+if \(brackets.inBrowser\) {/,
+            value: "if (false) {"
+        }
+    };
 
 module.exports = function (grunt) {
     grunt.initConfig({
@@ -103,11 +103,52 @@ module.exports = function (grunt) {
                             return contents.replace(rpl.match, rpl.value);
                         } else if (moduleName === "fileSystemImpl") {
                             // HACK: For in browser loading we need to replace file system implementation very early to avoid exceptions.
-                            return fs.readFileSync(__dirname + "/client-fs/file-system.js", { encoding: "utf8" });
+                            return fs.readFileSync(__dirname + "/client-fs/file-system.js", {
+                                encoding: "utf8"
+                            });
                         }
                         return contents;
                     }
                 }
+            }
+        },
+        replace: {
+            dist: {
+                options: {
+                    patterns: [
+                        {
+                            match: "foo",
+                            replacement: "bar"
+                        }
+                    ]
+                },
+                files: [
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: ["./brackets-src/src/index.html"],
+                        dest: "./brackets-dist/"
+                    }
+                ]
+            }
+        },
+        compress: {
+            main: {
+                options: {
+                    mode: "gzip"
+                },
+                files: [
+                    {
+                        expand: true,
+                        src: ["brackets-dist/*.js"],
+                        ext: ".js.gz"
+                    },
+                    {
+                        expand: true,
+                        src: ["brackets-dist/*.css"],
+                        ext: ".css.gz"
+                    }
+                ]
             }
         }
     });
@@ -118,6 +159,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-node-inspector");
     grunt.loadNpmTasks("grunt-simple-mocha");
     grunt.loadNpmTasks("grunt-contrib-requirejs");
+    grunt.loadNpmTasks("grunt-contrib-compress");
+    grunt.loadNpmTasks("grunt-replace");
 
     grunt.registerTask("test", function () {
         var arg = "all";
