@@ -2,13 +2,9 @@
 
 "use strict";
 
-var fs = require("fs"),
-    _replace = {
-        // HACK: For in browser loading we need to replace file system implementation very early to avoid exceptions.
-        //    "main": {
-        //        match: "filesystem/impls/appshell/AppshellFileSystem",
-        //        value: "filesystem/impls/socket-io-fs"
-        //    },
+var fs          = require("fs"),
+    path        = require("path"),
+    _replace    = {
         // HACK: 1. We have to mock shell app.
         // HACK: 2. Brackets inBrowser behaves very differently, that's why we have to fake it.
         // HACK: 3. We need the menus in the Browser.
@@ -21,6 +17,12 @@ var fs = require("fs"),
         "brackets": {
             match: /\/\/ Let the user know Brackets doesn't run in a web browser yet\s+if \(brackets.inBrowser\) {/,
             value: "if (false) {"
+        },
+        // TODO: Needs more investigaton.
+        // HACK: For some reason this line cases languageDropdown to be populated before it si initialized.
+        "editor/EditorStatusBar": {
+            match: "$(LanguageManager).on(\"languageAdded languageModified\", _populateLanguageDropdown);",
+            value: "// $(LanguageManager).on(\"languageAdded languageModified\", _populateLanguageDropdown);"
         }
     };
 
@@ -190,14 +192,14 @@ module.exports = function (grunt) {
                     include: ["utils/Compatibility", "brackets"],
                     // TODO: Figure out how to make sourcemaps work with grunt-usemin
                     // https://github.com/yeoman/grunt-usemin/issues/30
-                    generateSourceMaps: true,
-                    useSourceUrl: true,
+                    //generateSourceMaps: true,
+                    //useSourceUrl: true,
                     // required to support SourceMaps
                     // http://requirejs.org/docs/errors.html#sourcemapcomments
                     preserveLicenseComments: false,
-                    useStrict: true,
+                    //useStrict: true,
                     // Disable closure, we want define/require to be globals
-                    wrap: false,
+                    //wrap: false,
                     exclude: ["text!config.json"],
                     uglify2: {}, // https://github.com/mishoo/UglifyJS2
                     paths: {
@@ -269,17 +271,43 @@ module.exports = function (grunt) {
                         expand: true,
                         cwd: "brackets-dist/",
                         src: ["**/*.js"],
+                        extDot: "last",
+                        dest: "brackets-dist/",
                         ext: ".js.gz"
                     },
                     {
                         expand: true,
                         cwd: "brackets-dist/",
                         src: ["**/*.css"],
+                        extDot: "last",
+                        dest: "brackets-dist/",
                         ext: ".css.gz"
                     }
                 ]
             }
         }
+    });
+
+    var common  = require("./brackets-src/tasks/lib/common")(grunt),
+        build   = require("./brackets-src/tasks/build")(grunt);
+
+    grunt.registerTask("build-config", "Update config.json with the build timestamp, branch and SHA being built", function () {
+        var done = this.async(),
+            distConfig = grunt.file.readJSON("brackets-src/src/config.json");
+
+        build.getGitInfo(path.resolve("./brackets-src")).then(function (gitInfo) {
+            distConfig.version = distConfig.version.substr(0, distConfig.version.lastIndexOf("-") + 1) + gitInfo.commits;
+            distConfig.repository.SHA = gitInfo.sha;
+            distConfig.repository.branch = gitInfo.branch;
+            distConfig.config.build_timestamp = new Date().toString().split("(")[0].trim();
+
+            common.writeJSON(grunt, "brackets-dist/config.json", distConfig);
+
+            done();
+        }, function (err) {
+            grunt.log.writeln(err);
+            done(false);
+        });
     });
 
     // task: build
@@ -293,7 +321,8 @@ module.exports = function (grunt) {
         "concat",
         "copy",
         "usemin",
-        "compress"
+        "compress",
+        "build-config"
     ]);
 
     grunt.registerTask("test", function () {
