@@ -8,6 +8,5 @@ test
 Gruntfile.js
 jsdoc.json
 
-brackets-src/
-!brackets-src/src/
+brackets-src
 brackets-ext

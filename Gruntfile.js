@@ -25,6 +25,11 @@ var fs = require("fs"),
     };
 
 module.exports = function (grunt) {
+
+    // load dependencies
+    require("load-grunt-tasks")(grunt, {pattern: ["grunt-*"]});
+    //grunt.loadTasks("tasks");
+
     grunt.initConfig({
         jsdoc: {
             dist: {
@@ -85,14 +90,116 @@ module.exports = function (grunt) {
                 npm: false
             }
         },
-        requirejs: {
-            compile: {
+        clean: {
+            dist: {
+                files: [{
+                    dot: true,
+                    src: [
+                        "brackets-dist",
+                        "brackets-src/src/.index.html",
+                        "brackets-src/src/styles/brackets.css"
+                    ]
+                }]
+            }
+        },
+        copy: {
+            dist: {
+                files: [
+                    {
+                        "brackets-dist/index.html": "brackets-src/src/.index.html"
+                    },
+                    /* static files */
+                    {
+                        expand: true,
+                        dest: "brackets-dist/",
+                        cwd: "brackets-src/src/",
+                        src: [
+                            "nls/{,*/}*.js",
+                            "xorigin.js",
+                            "dependencies.js",
+                            "thirdparty/requirejs/require.js",
+                            "LiveDevelopment/launch.html"
+                        ]
+                    },
+                    /* node domains are not minified and must be copied to dist */
+                    {
+                        expand: true,
+                        dest: "brackets-dist/",
+                        cwd: "brackets-src/src/",
+                        src: [
+                            "extensibility/node/**",
+                            "!extensibility/node/spec/**",
+                            "filesystem/impls/appshell/node/**",
+                            "!filesystem/impls/appshell/node/spec/**"
+                        ]
+                    },
+                    /* extensions and CodeMirror modes */
+                    {
+                        expand: true,
+                        dest: "brackets-dist/",
+                        cwd: "brackets-src/src/",
+                        src: [
+                            "!extensions/default/*/unittest-files/**/*",
+                            "!extensions/default/*/unittests.js",
+                            "extensions/default/*/**/*",
+                            "extensions/dev/*",
+                            "extensions/samples/**/*",
+                            "thirdparty/CodeMirror2/addon/{,*/}*",
+                            "thirdparty/CodeMirror2/keymap/{,*/}*",
+                            "thirdparty/CodeMirror2/lib/{,*/}*",
+                            "thirdparty/CodeMirror2/mode/{,*/}*",
+                            "thirdparty/CodeMirror2/theme/{,*/}*",
+                            "thirdparty/i18n/*.js",
+                            "thirdparty/text/*.js"
+                        ]
+                    },
+                    /* styles, fonts and images */
+                    {
+                        expand: true,
+                        dest: "brackets-dist/styles",
+                        cwd: "brackets-src/src/styles",
+                        src: ["jsTreeTheme.css", "fonts/{,*/}*.*", "images/*", "brackets.min.css*"]
+                    }
+                ]
+            }
+        },
+        less: {
+            dist: {
+                files: {
+                    "brackets-src/src/styles/brackets.min.css": "brackets-src/src/styles/brackets.less"
+                },
                 options: {
-                    name: "main",
-                    baseUrl: "./brackets-src/src/",
-                    mainConfigFile: "./brackets-src/src/main.js",
-                    out: "./brackets-dist/main-built.js",
+                    compress: true,
+                    sourceMap: true,
+                    sourceMapFilename: "brackets-src/src/styles/brackets.min.css.map",
+                    outputSourceFiles: true,
+                    sourceMapRootpath: "",
+                    sourceMapBasepath: "brackets-src/src/styles"
+                }
+            }
+        },
+        requirejs: {
+            dist: {
+                // Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
+                options: {
+                    // `name` and `out` is set by grunt-usemin
+                    baseUrl: "brackets-src/src",
+                    optimize: "uglify2",
+                    // brackets.js should not be loaded until after polyfills defined in "utils/Compatibility"
+                    // so explicitly include it in main.js
+                    include: ["utils/Compatibility", "brackets"],
+                    // TODO: Figure out how to make sourcemaps work with grunt-usemin
+                    // https://github.com/yeoman/grunt-usemin/issues/30
+                    generateSourceMaps: true,
+                    useSourceUrl: true,
+                    // required to support SourceMaps
+                    // http://requirejs.org/docs/errors.html#sourcemapcomments
                     preserveLicenseComments: false,
+                    useStrict: true,
+                    // Disable closure, we want define/require to be globals
+                    wrap: false,
+                    exclude: ["text!config.json"],
+                    uglify2: {}, // https://github.com/mishoo/UglifyJS2
                     paths: {
                         "hacks.app": "../../hacks/app",
                         "socket.io": "../../node_modules/socket.io/node_modules/socket.io-client/socket.io"
@@ -112,24 +219,44 @@ module.exports = function (grunt) {
                 }
             }
         },
-        replace: {
+        targethtml: {
+            dist: {
+                files: {
+                    "brackets-src/src/.index.html": "brackets-src/src/index.html"
+                }
+            }
+        },
+        useminPrepare: {
+            options: {
+                dest: "brackets-dist"
+            },
+            html: "brackets-src/src/.index.html"
+        },
+        usemin: {
+            options: {
+                dirs: ["brackets-dist"]
+            },
+            html: ["brackets-dist/{,*/}*.html"]
+        },
+        htmlmin: {
             dist: {
                 options: {
-                    patterns: [
-                        {
-                            match: "foo",
-                            replacement: "bar"
-                        }
-                    ]
+                    /*removeCommentsFromCDATA: true,
+                    // https://github.com/yeoman/grunt-usemin/issues/44
+                    //collapseWhitespace: true,
+                    collapseBooleanAttributes: true,
+                    removeAttributeQuotes: true,
+                    removeRedundantAttributes: true,
+                    useShortDoctype: true,
+                    removeEmptyAttributes: true,
+                    removeOptionalTags: true*/
                 },
-                files: [
-                    {
-                        expand: true,
-                        flatten: true,
-                        src: ["./brackets-src/src/index.html"],
-                        dest: "./brackets-dist/"
-                    }
-                ]
+                files: [{
+                    expand: true,
+                    cwd: "brackets-src/src",
+                    src: "*.html",
+                    dest: "brackets-dist"
+                }]
             }
         },
         compress: {
@@ -140,12 +267,14 @@ module.exports = function (grunt) {
                 files: [
                     {
                         expand: true,
-                        src: ["brackets-dist/*.js"],
+                        cwd: "brackets-dist/",
+                        src: ["**/*.js"],
                         ext: ".js.gz"
                     },
                     {
                         expand: true,
-                        src: ["brackets-dist/*.css"],
+                        cwd: "brackets-dist/",
+                        src: ["**/*.css"],
                         ext: ".css.gz"
                     }
                 ]
@@ -153,14 +282,19 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.loadNpmTasks("grunt-shell");
-    grunt.loadNpmTasks("grunt-release");
-    grunt.loadNpmTasks("grunt-concurrent");
-    grunt.loadNpmTasks("grunt-node-inspector");
-    grunt.loadNpmTasks("grunt-simple-mocha");
-    grunt.loadNpmTasks("grunt-contrib-requirejs");
-    grunt.loadNpmTasks("grunt-contrib-compress");
-    grunt.loadNpmTasks("grunt-replace");
+    // task: build
+    grunt.registerTask("build", [
+        "clean",
+        "less",
+        "targethtml",
+        "useminPrepare",
+        "htmlmin",
+        "requirejs",
+        "concat",
+        "copy",
+        "usemin",
+        "compress"
+    ]);
 
     grunt.registerTask("test", function () {
         var arg = "all";

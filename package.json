@@ -34,7 +34,15 @@
         "grunt-concurrent": "*",
         "grunt-contrib-requirejs": "*",
         "grunt-contrib-compress": "*",
-        "grunt-replace": "*"
+        "grunt-contrib-copy": "*",
+        "grunt-contrib-htmlmin": "*",
+        "grunt-contrib-less": "*",
+        "grunt-replace": "*",
+        "grunt-contrib-concat": "*",
+        "grunt-targethtml": "*",
+        "grunt-usemin": "0.1.11",
+        "grunt-contrib-clean": "*",
+        "load-grunt-tasks": "*"
     },
     "keywords": [
         "brackets",
