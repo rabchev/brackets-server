@@ -26,13 +26,41 @@ var fs          = require("fs"),
         }
     };
 
+function addCodeMirrorModes(config) {
+    var root = path.join(__dirname, "brackets-src", "src", "thirdparty", "CodeMirror2", "mode"),
+        dirs = fs.readdirSync(root),
+        include = config.requirejs.main.options.include;
+
+    dirs.forEach(function (file) {
+        var stat = fs.statSync(root + "/" + file);
+        if (stat.isDirectory()) {
+            include.push("thirdparty/CodeMirror2/mode/" + file + "/" + file);
+        }
+    });
+}
+
+function addDefaultExtesions(config) {
+    var root = path.join(__dirname, "brackets-src", "src", "extensions", "default"),
+        dirs = fs.readdirSync(root),
+        modules = config.requirejs.exts.options.modules;
+
+    dirs.forEach(function (file) {
+        var stat = fs.statSync(root + "/" + file);
+        if (stat.isDirectory() && fs.existsSync(root + "/" + file + "/main.js")) {
+            modules.push({
+                name: file + "/main"
+            });
+        }
+    });
+}
+
 module.exports = function (grunt) {
 
     // load dependencies
     require("load-grunt-tasks")(grunt, {pattern: ["grunt-*"]});
     //grunt.loadTasks("tasks");
 
-    grunt.initConfig({
+    var config = {
         jsdoc: {
             dist: {
                 src: ["./server", "README.md"],
@@ -141,16 +169,16 @@ module.exports = function (grunt) {
                         dest: "brackets-dist/",
                         cwd: "brackets-src/src/",
                         src: [
-                            "!extensions/default/*/unittest-files/**/*",
-                            "!extensions/default/*/unittests.js",
-                            "extensions/default/*/**/*",
-                            "extensions/dev/*",
-                            "extensions/samples/**/*",
-                            "thirdparty/CodeMirror2/addon/{,*/}*",
-                            "thirdparty/CodeMirror2/keymap/{,*/}*",
-                            "thirdparty/CodeMirror2/lib/{,*/}*",
-                            "thirdparty/CodeMirror2/mode/{,*/}*",
-                            "thirdparty/CodeMirror2/theme/{,*/}*",
+//                            "!extensions/default/*/unittest-files/**/*",
+//                            "!extensions/default/*/unittests.js",
+//                            "extensions/default/*/**/*",
+//                            "extensions/dev/*",
+//                            "extensions/samples/**/*",
+//                            "thirdparty/CodeMirror2/addon/{,*/}*",
+//                            "thirdparty/CodeMirror2/keymap/{,*/}*",
+                            "thirdparty/CodeMirror2/lib/{,*/}*.css",
+//                            "thirdparty/CodeMirror2/mode/{,*/}*",
+//                            "thirdparty/CodeMirror2/theme/{,*/}*",
                             "thirdparty/i18n/*.js",
                             "thirdparty/text/*.js"
                         ]
@@ -181,27 +209,18 @@ module.exports = function (grunt) {
             }
         },
         requirejs: {
-            dist: {
-                // Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
+            main: {
                 options: {
                     // `name` and `out` is set by grunt-usemin
+                    name: "main",
+                    out: "brackets-dist/main.js",
+                    mainConfigFile: "brackets-src/src/main.js",
                     baseUrl: "brackets-src/src",
                     optimize: "uglify2",
-                    // brackets.js should not be loaded until after polyfills defined in "utils/Compatibility"
-                    // so explicitly include it in main.js
-                    include: ["utils/Compatibility", "brackets"],
-                    // TODO: Figure out how to make sourcemaps work with grunt-usemin
-                    // https://github.com/yeoman/grunt-usemin/issues/30
-                    //generateSourceMaps: true,
-                    //useSourceUrl: true,
-                    // required to support SourceMaps
-                    // http://requirejs.org/docs/errors.html#sourcemapcomments
-                    preserveLicenseComments: false,
-                    //useStrict: true,
-                    // Disable closure, we want define/require to be globals
-                    //wrap: false,
-                    exclude: ["text!config.json"],
                     uglify2: {}, // https://github.com/mishoo/UglifyJS2
+                    include: ["utils/Compatibility", "brackets"],
+                    preserveLicenseComments: false,
+                    exclude: ["text!config.json"],
                     paths: {
                         "hacks.app": "../../hacks/app",
                         "socket.io": "../../node_modules/socket.io/node_modules/socket.io-client/socket.io"
@@ -218,6 +237,20 @@ module.exports = function (grunt) {
                         }
                         return contents;
                     }
+                }
+            },
+            exts: {
+                options: {
+                    dir: "brackets-dist/",
+                    baseUrl: "brackets-src/src/extensions/default/",
+                    preserveLicenseComments: false,
+                    optimize: "uglify2",
+                    uglify2: {},
+                    paths: {
+                        "text" : "../../thirdparty/text/text",
+                        "i18n" : "../../thirdparty/i18n/i18n",
+                    },
+                    modules: []
                 }
             }
         },
@@ -286,7 +319,11 @@ module.exports = function (grunt) {
                 ]
             }
         }
-    });
+    };
+
+    addDefaultExtesions(config);
+    addCodeMirrorModes(config);
+    grunt.initConfig(config);
 
     var common  = require("./brackets-src/tasks/lib/common")(grunt),
         build   = require("./brackets-src/tasks/build")(grunt);
