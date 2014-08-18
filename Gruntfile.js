@@ -47,9 +47,11 @@ function addDefaultExtesions(config) {
     dirs.forEach(function (file) {
         var stat = fs.statSync(root + "/" + file);
         if (stat.isDirectory() && fs.existsSync(root + "/" + file + "/main.js")) {
-            modules.push({
-                name: file + "/main"
-            });
+            var mod = {
+                name: "extensions/default/" + file + "/main"
+            };
+            
+            modules.push(mod);
         }
     });
 }
@@ -152,17 +154,17 @@ module.exports = function (grunt) {
                         ]
                     },
                     /* node domains are not minified and must be copied to dist */
-                    {
-                        expand: true,
-                        dest: "brackets-dist/",
-                        cwd: "brackets-src/src/",
-                        src: [
-                            "extensibility/node/**",
-                            "!extensibility/node/spec/**",
-                            "filesystem/impls/appshell/node/**",
-                            "!filesystem/impls/appshell/node/spec/**"
-                        ]
-                    },
+//                    {
+//                        expand: true,
+//                        dest: "brackets-dist/",
+//                        cwd: "brackets-src/src/",
+//                        src: [
+//                            "extensibility/node/**",
+//                            "!extensibility/node/spec/**",
+//                            "filesystem/impls/appshell/node/**",
+//                            "!filesystem/impls/appshell/node/spec/**"
+//                        ]
+//                    },
                     /* extensions and CodeMirror modes */
                     {
                         expand: true,
@@ -238,21 +240,25 @@ module.exports = function (grunt) {
                         return contents;
                     }
                 }
-            },
-            exts: {
-                options: {
-                    dir: "brackets-dist/",
-                    baseUrl: "brackets-src/src/extensions/default/",
-                    preserveLicenseComments: false,
-                    optimize: "uglify2",
-                    uglify2: {},
-                    paths: {
-                        "text" : "../../thirdparty/text/text",
-                        "i18n" : "../../thirdparty/i18n/i18n",
-                    },
-                    modules: []
-                }
-            }
+            }//,
+//            HTMLCodeHints: {
+//                options: {
+//                    dir: "brackets-dist/",
+//                    baseUrl: "brackets-src/src/",
+//                    preserveLicenseComments: false,
+//                    optimize: "uglify2",
+//                    uglify2: {},
+//                    paths: {
+//                        "text" : "./thirdparty/text/text",
+//                        "i18n" : "./thirdparty/i18n/i18n",
+//                    },
+//                    modules: [],
+//                    onBuildRead: function (moduleName, path, contents) {
+//                        contents = contents.replace(/require\("text\!(?!\.\/)/g, "require(\"text!./");
+//                        return contents.replace(/require\("(?!\.\/|text\!)/g, "require(\"./");
+//                    }
+//                }
+//            }
         },
         targethtml: {
             dist: {
@@ -321,7 +327,7 @@ module.exports = function (grunt) {
         }
     };
 
-    addDefaultExtesions(config);
+//    addDefaultExtesions(config);
     addCodeMirrorModes(config);
     grunt.initConfig(config);
 
