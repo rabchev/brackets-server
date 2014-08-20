@@ -42,16 +42,49 @@ function addCodeMirrorModes(config) {
 function addDefaultExtesions(config) {
     var root = path.join(__dirname, "brackets-src", "src", "extensions", "default"),
         dirs = fs.readdirSync(root),
-        modules = config.requirejs.exts.options.modules;
+        rj = config.requirejs;
 
     dirs.forEach(function (file) {
         var stat = fs.statSync(root + "/" + file);
-        if (stat.isDirectory() && fs.existsSync(root + "/" + file + "/main.js")) {
+        if (stat.isDirectory() && fs.existsSync(root + "/" + file + "/main.js") && file !== "JavaScriptCodeHints") {
             var mod = {
-                name: "extensions/default/" + file + "/main"
+                options: {
+                    name: "main",
+                    out: "brackets-dist/extensions/default/" + file + "/main.js",
+                    baseUrl: "brackets-src/src/extensions/default/" + file + "/",
+                    preserveLicenseComments: false,
+                    optimize: "uglify2",
+                    uglify2: {},
+                    paths: {
+                        "text" : "../../../thirdparty/text/text",
+                        "i18n" : "../../../thirdparty/i18n/i18n",
+                    }
+                }
             };
-            
-            modules.push(mod);
+
+            rj[file] = mod;
+
+//            if (file === "JavaScriptCodeHints") {
+//                mod.options.onBuildRead = function (moduleName, path, contents) {
+//                    return contents.replace("== \"use strict\"", "== \"use\\ strict\"");
+//                };
+//
+//                rj.ternWorker = {
+//                    options: {
+//                        name: "tern-worker",
+//                        out: "brackets-dist/extensions/default/JavaScriptCodeHints/tern-worker.js",
+//                        baseUrl: "brackets-src/src/extensions/default/JavaScriptCodeHints/",
+//                        preserveLicenseComments: false,
+//                        optimize: "uglify2",
+//                        uglify2: {},
+//                        paths: {
+//                            "text" : "../../../thirdparty/text/text",
+//                            "i18n" : "../../../thirdparty/i18n/i18n",
+//                        },
+//                        wrap: false
+//                    }
+//                };
+//            }
         }
     });
 }
@@ -139,6 +172,7 @@ module.exports = function (grunt) {
                 files: [
                     {
                         "brackets-dist/index.html": "brackets-src/src/.index.html"
+
                     },
                     /* static files */
                     {
@@ -153,28 +187,16 @@ module.exports = function (grunt) {
                             "LiveDevelopment/launch.html"
                         ]
                     },
-                    /* node domains are not minified and must be copied to dist */
-//                    {
-//                        expand: true,
-//                        dest: "brackets-dist/",
-//                        cwd: "brackets-src/src/",
-//                        src: [
-//                            "extensibility/node/**",
-//                            "!extensibility/node/spec/**",
-//                            "filesystem/impls/appshell/node/**",
-//                            "!filesystem/impls/appshell/node/spec/**"
-//                        ]
-//                    },
                     /* extensions and CodeMirror modes */
                     {
                         expand: true,
                         dest: "brackets-dist/",
                         cwd: "brackets-src/src/",
                         src: [
-//                            "!extensions/default/*/unittest-files/**/*",
-//                            "!extensions/default/*/unittests.js",
-//                            "extensions/default/*/**/*",
-//                            "extensions/dev/*",
+                            "extensions/default/JavaScriptCodeHints/**",
+                            "extensions/default/*/**/*.{css,less,json,svg,png}",
+                            "!extensions/default/*/unittest-files/**",
+                            "extensions/dev/*",
 //                            "extensions/samples/**/*",
 //                            "thirdparty/CodeMirror2/addon/{,*/}*",
 //                            "thirdparty/CodeMirror2/keymap/{,*/}*",
@@ -191,6 +213,15 @@ module.exports = function (grunt) {
                         dest: "brackets-dist/styles",
                         cwd: "brackets-src/src/styles",
                         src: ["jsTreeTheme.css", "fonts/{,*/}*.*", "images/*", "brackets.min.css*"]
+                    },
+                    /* samples */
+                    {
+                        expand: true,
+                        dest: "brackets-dist/",
+                        cwd: "brackets-src/",
+                        src: [
+                            "samples/**"
+                        ]
                     }
                 ]
             }
@@ -238,27 +269,22 @@ module.exports = function (grunt) {
                             });
                         }
                         return contents;
-                    }
+                    },
+//                    generateSourceMaps: true,
+//                    useSourceUrl: true,
+                    wrap: false
                 }
-            }//,
-//            HTMLCodeHints: {
-//                options: {
-//                    dir: "brackets-dist/",
-//                    baseUrl: "brackets-src/src/",
-//                    preserveLicenseComments: false,
-//                    optimize: "uglify2",
-//                    uglify2: {},
-//                    paths: {
-//                        "text" : "./thirdparty/text/text",
-//                        "i18n" : "./thirdparty/i18n/i18n",
-//                    },
-//                    modules: [],
-//                    onBuildRead: function (moduleName, path, contents) {
-//                        contents = contents.replace(/require\("text\!(?!\.\/)/g, "require(\"text!./");
-//                        return contents.replace(/require\("(?!\.\/|text\!)/g, "require(\"./");
-//                    }
-//                }
-//            }
+            }
+        },
+        replace: {
+            dist: {
+                src: "brackets-src/src/.index.html",
+                overwrite: true,
+                replacements: [{
+                    from: "<!-- build:js main.js -->",
+                    to: " "
+                }]
+            }
         },
         targethtml: {
             dist: {
@@ -309,7 +335,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: "brackets-dist/",
-                        src: ["**/*.js"],
+                        src: ["**/*.js", "!samples/**"],
                         extDot: "last",
                         dest: "brackets-dist/",
                         ext: ".js.gz"
@@ -317,7 +343,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: "brackets-dist/",
-                        src: ["**/*.css"],
+                        src: ["**/*.css", "!samples/**"],
                         extDot: "last",
                         dest: "brackets-dist/",
                         ext: ".css.gz"
@@ -327,7 +353,7 @@ module.exports = function (grunt) {
         }
     };
 
-//    addDefaultExtesions(config);
+    addDefaultExtesions(config);
     addCodeMirrorModes(config);
     grunt.initConfig(config);
 
@@ -358,6 +384,7 @@ module.exports = function (grunt) {
         "clean",
         "less",
         "targethtml",
+        "replace",
         "useminPrepare",
         "htmlmin",
         "requirejs",
