@@ -14,16 +14,36 @@ var fs          = require("fs"),
             value: "global.brackets.app = require(\"hacks.app\"); global.brackets.inBrowser = false; global.brackets.nativeMenus = false; global.brackets.config.extension_registry = '/brackets/s3.amazonaws.com/extend.brackets/registry.json'; global.brackets.config.extension_url = '/brackets/s3.amazonaws.com/extend.brackets/{0}/{0}-{1}.zip';"
         },
         // HACK: Remove warning dialog about Brackets not been ready for browsers.
-        "brackets": {
-            match: /\/\/ Let the user know Brackets doesn't run in a web browser yet\s+if \(brackets.inBrowser\) {/,
-            value: "if (false) {"
-        },
+        "brackets": [
+            {
+                match: /\/\/ Let the user know Brackets doesn't run in a web browser yet\s+if \(brackets.inBrowser\) {/,
+                value: "if (false) {"
+            },
+            {
+                match: "!url.match(/^file:\\/\\//) && url !== \"about:blank\" && url.indexOf(\":\") !== -1",
+                varlue: "false"
+            }
+        ],
         // TODO: Needs more investigaton.
         // HACK: For some reason this line cases languageDropdown to be populated before it si initialized.
         "editor/EditorStatusBar": {
             match: "$(LanguageManager).on(\"languageAdded languageModified\", _populateLanguageDropdown);",
             value: "// $(LanguageManager).on(\"languageAdded languageModified\", _populateLanguageDropdown);"
-        }
+        },
+        "command/DefaultMenus": [
+            {
+                match: "menu.addMenuItem(Commands.FILE_OPEN);",
+                value: " "
+            },
+            {
+                match: "menu.addMenuItem(Commands.FILE_OPEN_FOLDER);",
+                value: " "
+            },
+            {
+                match: "menu.addMenuItem(Commands.FILE_SAVE_AS);",
+                value: " "
+            }
+        ]
     };
 
 function addCodeMirrorModes(config) {
@@ -261,6 +281,12 @@ module.exports = function (grunt) {
                     onBuildRead: function (moduleName, path, contents) {
                         var rpl = _replace[moduleName];
                         if (rpl) {
+                            if (Array.isArray(rpl)) {
+                                rpl.forEach(function (el) {
+                                    contents = contents.replace(el.match, el.value);
+                                });
+                                return contents;
+                            }
                             return contents.replace(rpl.match, rpl.value);
                         } else if (moduleName === "fileSystemImpl") {
                             // HACK: For in browser loading we need to replace file system implementation very early to avoid exceptions.

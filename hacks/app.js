@@ -4,7 +4,7 @@ define(function (require, exports) {
     "use strict";
 
     exports.getApplicationSupportDirectory = function () {
-        return "/";
+        return "/support";
     };
 
     /**
@@ -23,6 +23,10 @@ define(function (require, exports) {
         callback(-2);
     };
 
+    exports.openURLInDefaultBrowser = function (url) {
+        var win = window.open(url, "_blank");
+        win.focus();
+    };
 
     var Fn = Function, global = (new Fn("return this"))();
     if (!global.Mustache.compile) {
