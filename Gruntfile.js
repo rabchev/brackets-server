@@ -24,8 +24,7 @@ var fs          = require("fs"),
                 varlue: "false"
             }
         ],
-        // TODO: Needs more investigaton.
-        // HACK: For some reason this line cases languageDropdown to be populated before it si initialized.
+        //  TODO:HACK: For some reason this line causes languageDropdown to be populated before it si initialized. Needs more investigaton.
         "editor/EditorStatusBar": {
             match: "$(LanguageManager).on(\"languageAdded languageModified\", _populateLanguageDropdown);",
             value: "// $(LanguageManager).on(\"languageAdded languageModified\", _populateLanguageDropdown);"
@@ -66,6 +65,10 @@ function addDefaultExtesions(config) {
 
     dirs.forEach(function (file) {
         var stat = fs.statSync(root + "/" + file);
+
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // TODO: JavaScriptCodeHints cannot be optimized for multiple problems. Needs more investigation.
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         if (stat.isDirectory() && fs.existsSync(root + "/" + file + "/main.js") && file !== "JavaScriptCodeHints") {
             var mod = {
                 options: {
@@ -84,6 +87,7 @@ function addDefaultExtesions(config) {
 
             rj[file] = mod;
 
+            // The code below solves some of the problems with JavaScriptCodeHints optimization.
 //            if (file === "JavaScriptCodeHints") {
 //                mod.options.onBuildRead = function (moduleName, path, contents) {
 //                    return contents.replace("== \"use strict\"", "== \"use\\ strict\"");
@@ -290,14 +294,15 @@ module.exports = function (grunt) {
                             return contents.replace(rpl.match, rpl.value);
                         } else if (moduleName === "fileSystemImpl") {
                             // HACK: For in browser loading we need to replace file system implementation very early to avoid exceptions.
-                            return fs.readFileSync(__dirname + "/client-fs/file-system.js", {
-                                encoding: "utf8"
-                            });
+                            return fs.readFileSync(__dirname + "/client-fs/file-system.js", { encoding: "utf8" });
+                        } else if (moduleName === "utils/NodeConnection") {
+                            // HACK: We serve the source from Node, connect to the same instance.
+                            return fs.readFileSync(__dirname + "/hacks/NodeConnection.js", { encoding: "utf8" });
                         }
                         return contents;
                     },
-//                    generateSourceMaps: true,
-//                    useSourceUrl: true,
+                    generateSourceMaps: true,
+                    useSourceUrl: true,
                     wrap: false
                 }
             }

@@ -20,7 +20,8 @@ define(function (require, exports) {
      * @return None. This is an asynchronous call that sends all return information to the callback.
      */
     exports.getNodeState = function (callback) {
-        callback(-2);
+        // We serve the source from Node, connect to the same instance.
+        callback(null, window.location.port);
     };
 
     exports.openURLInDefaultBrowser = function (url) {
