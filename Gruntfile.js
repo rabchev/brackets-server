@@ -231,6 +231,16 @@ module.exports = function (grunt) {
                             "thirdparty/text/*.js"
                         ]
                     },
+                    /* Node domains */
+                    {
+                        expand: true,
+                        dest: "brackets-srv/",
+                        cwd: "brackets-src/src/",
+                        src: [
+                            "extensions/default/StaticServer/node/**",
+                            "extensibility/node/**"
+                        ]
+                    },
                     /* styles, fonts and images */
                     {
                         expand: true,
