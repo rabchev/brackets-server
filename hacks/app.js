@@ -7,6 +7,11 @@ define(function (require, exports) {
         return "/support";
     };
 
+
+    exports.getUserDocumentsDirectory = function () {
+        return "/projects";
+    };
+
     /**
      * Returns the TCP port of the current Node server
      *
