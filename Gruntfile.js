@@ -11,7 +11,7 @@ var fs          = require("fs"),
         // HACK: 4/5. Brackets extension registry services don't allow CORS, that's why we have to proxy the requests.
         "utils/Global": {
             match: "global.brackets.app = {};",
-            value: "global.brackets.app = require(\"hacks.app\"); global.brackets.inBrowser = false; global.brackets.nativeMenus = false; global.brackets.config.extension_registry = '/brackets/s3.amazonaws.com/extend.brackets/registry.json'; global.brackets.config.extension_url = '/brackets/s3.amazonaws.com/extend.brackets/{0}/{0}-{1}.zip';"
+            value: "global.brackets.app = require(\"hacks.app\"); global.brackets.inBrowser = false; global.brackets.nativeMenus = false; global.brackets.config.extension_registry = '/brackets/s3.amazonaws.com/extend.brackets/registry.json';"// global.brackets.config.extension_url = '/brackets/s3.amazonaws.com/extend.brackets/{0}/{0}-{1}.zip';"
         },
         // HACK: Remove warning dialog about Brackets not been ready for browsers.
         "brackets": [
@@ -238,8 +238,13 @@ module.exports = function (grunt) {
                         cwd: "brackets-src/src/",
                         src: [
                             "extensions/default/StaticServer/node/**",
-                            "extensibility/node/**"
+                            "extensibility/node/**",
+                            "!extensibility/node/ExtensionManagerDomain.js",
                         ]
+                    },
+                    /* Node domains */
+                    {
+                        "brackets-srv/extensibility/node/ExtensionManagerDomain.js": "lib/domians/ExtensionManagerDomain.js"
                     },
                     /* styles, fonts and images */
                     {
