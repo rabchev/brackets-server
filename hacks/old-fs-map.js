@@ -1,8 +1,9 @@
 define(function (require, exports) {
     "use strict";
 
-    exports.stat = function(path) {
+    var _   = require("thirdparty/lodash"),
+        fs  = require("fileSystemImpl");
 
-    };
+    _.mixin(exports, fs);
 
 });
