@@ -17,6 +17,7 @@
         "send": "*",
         "mkdirp": "*",
         "rimraf": "*",
+        "ncp": "*",
         "commander": "*",
         "open": "*",
         "socket.io": "*"

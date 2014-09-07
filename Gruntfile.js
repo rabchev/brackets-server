@@ -11,7 +11,7 @@ var fs          = require("fs"),
         // HACK: 4/5. Brackets extension registry services don't allow CORS, that's why we have to proxy the requests.
         "utils/Global": {
             match: "global.brackets.app = {};",
-            value: "global.brackets.app=require(\"hacks.app\");global.brackets.inBrowser=false; global.brackets.nativeMenus=false;global.brackets.config.extension_registry='/brackets/s3.amazonaws.com/extend.brackets/registry.json';global.brackets.fs=require(\"hacks.fsMap\");"
+            value: "global.brackets.app=require(\"hacks.app\");global.brackets.inBrowser=false; global.brackets.nativeMenus=false;global.brackets.config.extension_registry='/brackets/s3.amazonaws.com/extend.brackets/registry.json';global.brackets.fs=require(\"hacks.lowFs\");"
         },
         // HACK: Remove warning dialog about Brackets not been ready for browsers.
         "brackets": [
@@ -295,7 +295,7 @@ module.exports = function (grunt) {
                     exclude: ["text!config.json"],
                     paths: {
                         "hacks.app": "../../hacks/app",
-                        "hacks.fsMap": "../../hacks/old-fs-map",
+                        "hacks.lowFs": "../../hacks/low-level-fs",
                         "socket.io": "../../node_modules/socket.io/node_modules/socket.io-client/socket.io"
                     },
                     onBuildRead: function (moduleName, path, contents) {
