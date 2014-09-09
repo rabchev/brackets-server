@@ -184,6 +184,7 @@ module.exports = function (grunt) {
                 files: [{
                     dot: true,
                     src: [
+                        "brackets-srv",
                         "brackets-dist",
                         "brackets-src/src/.index.html",
                         "brackets-src/src/styles/brackets.css"
@@ -221,12 +222,7 @@ module.exports = function (grunt) {
                             "extensions/default/*/**/*.{css,less,json,svg,png}",
                             "!extensions/default/*/unittest-files/**",
                             "extensions/dev/*",
-//                            "extensions/samples/**/*",
-//                            "thirdparty/CodeMirror2/addon/{,*/}*",
-//                            "thirdparty/CodeMirror2/keymap/{,*/}*",
                             "thirdparty/CodeMirror2/lib/{,*/}*.css",
-//                            "thirdparty/CodeMirror2/mode/{,*/}*",
-//                            "thirdparty/CodeMirror2/theme/{,*/}*",
                             "thirdparty/i18n/*.js",
                             "thirdparty/text/*.js"
                         ]
@@ -239,12 +235,15 @@ module.exports = function (grunt) {
                         src: [
                             "extensions/default/StaticServer/node/**",
                             "extensibility/node/**",
-                            "!extensibility/node/ExtensionManagerDomain.js",
+                            "!extensibility/node/ExtensionManagerDomain.js"
                         ]
                     },
                     /* Node domains */
                     {
-                        "brackets-srv/extensibility/node/ExtensionManagerDomain.js": "lib/domians/ExtensionManagerDomain.js"
+                        expand: true,
+                        dest: "brackets-srv/extensibility/node/",
+                        cwd: "lib/domains/",
+                        src: ["ExtensionManagerDomain.js"]
                     },
                     /* styles, fonts and images */
                     {
