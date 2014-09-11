@@ -113,6 +113,31 @@ function addDefaultExtesions(config) {
     });
 }
 
+function addEmbeddedExtesions(config) {
+    var root = path.join(__dirname, "brackets-src", "src", "extensions", "default"),
+        dirs = fs.readdirSync(root),
+        rj = config.requirejs;
+
+    dirs.forEach(function (file) {
+        var mod = {
+            options: {
+                name: "main",
+                out: "brackets-dist/extensions/default/" + file + "/main.js",
+                baseUrl: "brackets-src/src/extensions/default/" + file + "/",
+                preserveLicenseComments: false,
+                optimize: "uglify2",
+                uglify2: {},
+                paths: {
+                    "text" : "../../../thirdparty/text/text",
+                    "i18n" : "../../../thirdparty/i18n/i18n",
+                }
+            }
+        };
+
+        rj[file] = mod;
+    });
+}
+
 module.exports = function (grunt) {
 
     // load dependencies
@@ -295,7 +320,8 @@ module.exports = function (grunt) {
                     paths: {
                         "hacks.app": "../../hacks/app",
                         "hacks.lowFs": "../../hacks/low-level-fs",
-                        "socket.io": "../../node_modules/socket.io/node_modules/socket.io-client/socket.io"
+                        "socket.io": "../../node_modules/socket.io/node_modules/socket.io-client/socket.io",
+                        "open-dialog": "../../client-fs/lib/open-dialog"
                     },
                     onBuildRead: function (moduleName, path, contents) {
                         var rpl = _replace[moduleName];
@@ -309,7 +335,10 @@ module.exports = function (grunt) {
                             return contents.replace(rpl.match, rpl.value);
                         } else if (moduleName === "fileSystemImpl") {
                             // HACK: For in browser loading we need to replace file system implementation very early to avoid exceptions.
-                            return fs.readFileSync(__dirname + "/client-fs/file-system.js", { encoding: "utf8" });
+                            return fs.readFileSync(__dirname + "/client-fs/lib/file-system.js", { encoding: "utf8" })
+                                .replace(/brackets\.getModule/g, "require")
+                                .replace("require(\"./open-dialog\")", "{}")
+                                .replace("require(\"./save-dialog\")", "{}");
                         } else if (moduleName === "utils/NodeConnection") {
                             // HACK: We serve the source from Node, connect to the same instance.
                             return fs.readFileSync(__dirname + "/hacks/NodeConnection.js", { encoding: "utf8" });
@@ -400,6 +429,7 @@ module.exports = function (grunt) {
     };
 
     addDefaultExtesions(config);
+    addEmbeddedExtesions(config);
     addCodeMirrorModes(config);
     grunt.initConfig(config);
 
