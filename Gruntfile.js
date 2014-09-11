@@ -285,6 +285,16 @@ module.exports = function (grunt) {
                         src: [
                             "samples/**"
                         ]
+                    },
+                    /* embedded extensions */
+                    {
+                        expand: true,
+                        dest: "brackets-dist/extensions/default/",
+                        cwd: "embedded-ext/",
+                        src: [
+                            "**",
+                            "!*/main.js"
+                        ]
                     }
                 ]
             }
@@ -409,7 +419,11 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: "brackets-dist/",
-                        src: ["**/*.js", "!samples/**"],
+                        src: [
+                            "**/*.js",
+                            "!samples/**",
+                            "!extensions/default/new-project/templateFiles/**"
+                        ],
                         extDot: "last",
                         dest: "brackets-dist/",
                         ext: ".js.gz"
@@ -417,7 +431,11 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: "brackets-dist/",
-                        src: ["**/*.css", "!samples/**"],
+                        src: [
+                            "**/*.css",
+                            "!samples/**",
+                            "!extensions/default/new-project/templateFiles/**"
+                        ],
                         extDot: "last",
                         dest: "brackets-dist/",
                         ext: ".css.gz"
