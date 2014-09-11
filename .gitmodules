@@ -1,6 +1,9 @@
 [submodule "brackets-src"]
 	path = brackets-src
 	url = https://github.com/adobe/brackets.git
-[submodule "client-fs"]
-	path = client-fs
+[submodule "embedded-ext/client-fs"]
+	path = embedded-ext/client-fs
 	url = https://github.com/rabchev/socket-io-fs.git
+[submodule "embedded-ext/new-project"]
+	path = embedded-ext/new-project
+	url = https://github.com/JeffryBooher/brackets-newproject-extension.git

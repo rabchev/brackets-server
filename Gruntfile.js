@@ -114,7 +114,7 @@ function addDefaultExtesions(config) {
 }
 
 function addEmbeddedExtesions(config) {
-    var root = path.join(__dirname, "brackets-src", "src", "extensions", "default"),
+    var root = path.join(__dirname, "embedded-ext"),
         dirs = fs.readdirSync(root),
         rj = config.requirejs;
 
@@ -123,13 +123,13 @@ function addEmbeddedExtesions(config) {
             options: {
                 name: "main",
                 out: "brackets-dist/extensions/default/" + file + "/main.js",
-                baseUrl: "brackets-src/src/extensions/default/" + file + "/",
+                baseUrl: "embedded-ext/" + file + "/",
                 preserveLicenseComments: false,
                 optimize: "uglify2",
                 uglify2: {},
                 paths: {
-                    "text" : "../../../thirdparty/text/text",
-                    "i18n" : "../../../thirdparty/i18n/i18n",
+                    "text" : "../../brackets-src/src/thirdparty/text/text",
+                    "i18n" : "../../brackets-src/src/thirdparty/i18n/i18n",
                 }
             }
         };
@@ -320,8 +320,7 @@ module.exports = function (grunt) {
                     paths: {
                         "hacks.app": "../../hacks/app",
                         "hacks.lowFs": "../../hacks/low-level-fs",
-                        "socket.io": "../../node_modules/socket.io/node_modules/socket.io-client/socket.io",
-                        "open-dialog": "../../client-fs/lib/open-dialog"
+                        "socket.io": "../../node_modules/socket.io/node_modules/socket.io-client/socket.io"
                     },
                     onBuildRead: function (moduleName, path, contents) {
                         var rpl = _replace[moduleName];
@@ -335,7 +334,7 @@ module.exports = function (grunt) {
                             return contents.replace(rpl.match, rpl.value);
                         } else if (moduleName === "fileSystemImpl") {
                             // HACK: For in browser loading we need to replace file system implementation very early to avoid exceptions.
-                            return fs.readFileSync(__dirname + "/client-fs/lib/file-system.js", { encoding: "utf8" })
+                            return fs.readFileSync(__dirname + "/embedded-ext/client-fs/lib/file-system.js", { encoding: "utf8" })
                                 .replace(/brackets\.getModule/g, "require")
                                 .replace("require(\"./open-dialog\")", "{}")
                                 .replace("require(\"./save-dialog\")", "{}");
