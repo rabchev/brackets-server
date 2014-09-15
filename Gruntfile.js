@@ -81,7 +81,10 @@ function addDefaultExtesions(config) {
                     paths: {
                         "text" : "../../../thirdparty/text/text",
                         "i18n" : "../../../thirdparty/i18n/i18n",
-                    }
+                    },
+//                    generateSourceMaps: true,
+//                    useSourceUrl: true,
+                    wrap: false
                 }
             };
 
@@ -130,7 +133,10 @@ function addEmbeddedExtesions(config) {
                 paths: {
                     "text" : "../../brackets-src/src/thirdparty/text/text",
                     "i18n" : "../../brackets-src/src/thirdparty/i18n/i18n",
-                }
+                },
+                generateSourceMaps: true,
+                useSourceUrl: true,
+                wrap: false
             }
         };
 
@@ -354,8 +360,8 @@ module.exports = function (grunt) {
                         }
                         return contents;
                     },
-                    generateSourceMaps: true,
-                    useSourceUrl: true,
+//                    generateSourceMaps: true,
+//                    useSourceUrl: true,
                     wrap: false
                 }
             }
