@@ -28,21 +28,7 @@ var fs          = require("fs"),
         "editor/EditorStatusBar": {
             match: "$(LanguageManager).on(\"languageAdded languageModified\", _populateLanguageDropdown);",
             value: "// $(LanguageManager).on(\"languageAdded languageModified\", _populateLanguageDropdown);"
-        },
-        "command/DefaultMenus": [
-            {
-                match: "menu.addMenuItem(Commands.FILE_OPEN);",
-                value: " "
-            },
-            {
-                match: "menu.addMenuItem(Commands.FILE_OPEN_FOLDER);",
-                value: " "
-            },
-            {
-                match: "menu.addMenuItem(Commands.FILE_SAVE_AS);",
-                value: " "
-            }
-        ]
+        }
     };
 
 function addCodeMirrorModes(config) {
@@ -66,9 +52,9 @@ function addDefaultExtesions(config) {
     dirs.forEach(function (file) {
         var stat = fs.statSync(root + "/" + file);
 
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // TODO: JavaScriptCodeHints cannot be optimized for multiple problems. Needs more investigation.
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         if (stat.isDirectory() && fs.existsSync(root + "/" + file + "/main.js") && file !== "JavaScriptCodeHints") {
             var mod = {
                 options: {
@@ -360,8 +346,8 @@ module.exports = function (grunt) {
                         }
                         return contents;
                     },
-//                    generateSourceMaps: true,
-//                    useSourceUrl: true,
+                    generateSourceMaps: true,
+                    useSourceUrl: true,
                     wrap: false
                 }
             }
