@@ -35,12 +35,16 @@ define(function (require, exports) {
     };
 
     exports.quit = function () {
-        window.open("", "_self", "");
-        window.close();
+        // Browser window cannot be closed from script.
     };
 
     exports.abortQuit = function () {
-        // Do nothing.
+        // Browser window cannot be closed from script.
+    };
+
+    exports.showExtensionsFolder = function (appURL, callback) {
+        // TODO: See if this is needed at all, if so we have to provide some sort of file explorer.
+        callback("Not supported.");
     };
 
     var Fn = Function, global = (new Fn("return this"))();

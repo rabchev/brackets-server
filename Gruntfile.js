@@ -28,7 +28,18 @@ var fs          = require("fs"),
         "editor/EditorStatusBar": {
             match: "$(LanguageManager).on(\"languageAdded languageModified\", _populateLanguageDropdown);",
             value: "// $(LanguageManager).on(\"languageAdded languageModified\", _populateLanguageDropdown);"
-        }
+        },
+        "command/DefaultMenus": [
+            {
+                // Browser window cannot be closed from script.
+                match: "if (brackets.platform !== \"mac\" || !brackets.nativeMenus) {",
+                value: "if (false) {"
+            },
+            {
+                match: /menu\.addMenuDivider\(\);\s*menu\.addMenuItem\(Commands.HELP_SHOW_EXT_FOLDER\);/,
+                value: " "
+            }
+        ]
     };
 
 function addCodeMirrorModes(config) {
