@@ -34,6 +34,15 @@ define(function (require, exports) {
         win.focus();
     };
 
+    exports.quit = function () {
+        window.open("", "_self", "");
+        window.close();
+    };
+
+    exports.abortQuit = function () {
+        // Do nothing.
+    };
+
     var Fn = Function, global = (new Fn("return this"))();
     if (!global.Mustache.compile) {
         global.Mustache.compile = function (template) {
