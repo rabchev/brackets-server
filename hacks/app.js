@@ -26,7 +26,7 @@ define(function (require, exports) {
      */
     exports.getNodeState = function (callback) {
         // We serve the source from Node, connect to the same instance.
-        callback(null, window.location.port);
+        callback(null, window.location.port || window.location.protocol === "http" ? 80 : 443);
     };
 
     exports.openURLInDefaultBrowser = function (url) {
