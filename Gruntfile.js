@@ -131,8 +131,8 @@ function addEmbeddedExtesions(config) {
                     "text" : "../../brackets-src/src/thirdparty/text/text",
                     "i18n" : "../../brackets-src/src/thirdparty/i18n/i18n",
                 },
-//                generateSourceMaps: true,
-//                useSourceUrl: true,
+                generateSourceMaps: true,
+                useSourceUrl: true,
                 wrap: false
             }
         };
