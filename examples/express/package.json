@@ -1,0 +1,9 @@
+{
+    "name": "brackets-server-express",
+    "description": "Example for embedding Brackets Server in Express applications.",
+    "version": "0.1.0",
+    "dependencies": {
+        "express": "*",
+        "brackets": "*"
+    }
+}
