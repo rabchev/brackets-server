@@ -21,15 +21,6 @@ Usage Examples
 
 All arguments are optional.
 
-<style>
-    table th { 
-        white-space: nowrap; 
-    } 
-    table td:nth-child(-n+3) { 
-        white-space: nowrap; 
-    }
-</style>
-
 | Short Option | Long Option  | Default Value     | Description
 |--------------|--------------|-------------------|------------------------------------------------------------
 | `-p <prot>`  | `--port`     | `6800`            | TCP port on which Brackets server is listening.
