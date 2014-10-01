@@ -21,7 +21,7 @@ Usage Examples
 
 All arguments are optional.
 
-| Short Option | Long Option  | Default Value     | Description
+|<span style="white-space: nowrap">Short Option</span>|<span style="white-space: nowrap">Long Option &nbsp;&nbsp;</span>|<span style="white-space: nowrap">Default Value &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>| Description
 |--------------|--------------|-------------------|-----------------------------------------------------------------------------
 | `-p <prot>`  | `--port`     | `6800`            | TCP port on which Brackets server is listening.
 | `-j <dir>`   | `--proj-dir` | `~/Projects`      | Root directory for projects. Directories above this root cannot be accessed.
