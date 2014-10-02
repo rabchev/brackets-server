@@ -11,13 +11,13 @@ commander
     .version(pkg.version)
     .option("-p, --port <port>", "Specifies TCP <port> for Brackets service. The default port is 6800.")
     .option("-o, --open", "Opens Brackets in the default web browser.")
-    .option("-s, --supp", "Specifies the root directory for Brackets supporting files such as user extensions, configurations and state persistence. The default locations is ~/.brackets-srv.")
-    .option("-j, --proj", "Specifies the root directory for projects. The default locations is ~/Projects.")
+    .option("-s, --supp-dir <path>", "Specifies the root directory for Brackets supporting files such as user extensions, configurations and state persistence. The default locations is ~/.brackets-srv.")
+    .option("-j, --proj-dir <path>", "Specifies the root directory for projects. The default locations is ~/Projects.")
     .parse(process.argv);
 
 var app = brackets(commander.port, {
-    supportDir: commander.supp || path.join(homeDir, ".brackets-srv"),
-    projectsDir: commander.proj || path.join(homeDir, "Projects")
+    supportDir: commander.suppDir || path.join(homeDir, ".brackets-srv"),
+    projectsDir: commander.projDir || path.join(homeDir, "Projects")
 });
 
 if (commander.open) {

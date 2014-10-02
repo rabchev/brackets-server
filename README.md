@@ -24,8 +24,8 @@ All arguments are optional.
 | Short Option | Long Option  | Default Value     | Description
 |--------------|--------------|-------------------|------------------------------------------------------------
 | `-p <prot>`  | `--port`     | `6800`            | TCP port on which Brackets server is listening.
-| `-j <dir>`   | `--proj`     | `~/Projects`      | Root directory for projects. Directories above this root cannot be accessed.
-| `-s <dir>`   | `--supp`     | `~/.brackets-srv` | Root directory for Brackets supporting files such as user extensions, configurations and state persistence.
+| `-j <dir>`   | `--proj-dir` | `~/Projects`      | Root directory for projects. Directories above this root cannot be accessed.
+| `-s <dir>`   | `--supp-dir` | `~/.brackets-srv` | Root directory for Brackets supporting files such as user extensions, configurations and state persistence.
 
 Embedding Brackets Server in Web Applications
 ---------------------------------------------
