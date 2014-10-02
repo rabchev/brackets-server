@@ -1,7 +1,7 @@
 {
     "name": "brackets",
     "description": "Brackets Server is a server for providing hosted version of the popular code editor Brackets.",
-    "version": "0.5.1",
+    "version": "0.5.2",
     "author": "Boyan Rabchev <boyan@rabchev.com>",
     "contributors": [
         { "name": "Boyan Rabchev", "email": "boyan@rabchev.com" }
@@ -11,7 +11,6 @@
     "preferGlobal": "true",
     "bin": {
         "brackets": "./bin/run.js",
-        "brackets-debug": "./bin/run-debug.js",
         "brackets-server": "./bin/run.js"
     },
     "dependencies": {

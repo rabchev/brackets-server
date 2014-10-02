@@ -1,7 +1,7 @@
 /*jshint -W106 */
 
 "use strict";
-
+debugger;
 var fs          = require("fs"),
     path        = require("path"),
     _replace    = {
@@ -264,7 +264,10 @@ module.exports = function (grunt) {
                             "extensions/default/StaticServer/node/**",
                             "extensibility/node/**",
                             "!extensibility/node/ExtensionManagerDomain.js"
-                        ]
+                        ] //,
+//                        rename: function(dest, src) {
+//                            return dest + src.replace(/node_modules/g, "_node_modules");
+//                        }
                     },
                     /* Node domains */
                     {
