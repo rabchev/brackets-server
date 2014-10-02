@@ -11,7 +11,8 @@
     "preferGlobal": "true",
     "bin": {
         "brackets": "./bin/run.js",
-        "node-brackets": "./bin/run.js"
+        "brackets-debug": "./bin/run-debug.js",
+        "brackets-server": "./bin/run.js"
     },
     "dependencies": {
         "send": "*",
