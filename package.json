@@ -1,12 +1,12 @@
 {
     "name": "brackets",
-    "description": "This module integrates [Adobe Brackets](http://brackets.io/) code editor in Node.js based web applications.",
-    "version": "0.5.0",
+    "description": "Brackets Server is a server for providing hosted version of the popular code editor Brackets.",
+    "version": "0.5.1",
     "author": "Boyan Rabchev <boyan@rabchev.com>",
     "contributors": [
         { "name": "Boyan Rabchev", "email": "boyan@rabchev.com" }
     ],
-    "repository": "https://github.com/rabchev/node-brackets-module.git",
+    "repository": "https://github.com/rabchev/brackets-server.git",
     "main": "./lib/server",
     "preferGlobal": "true",
     "bin": {
@@ -49,7 +49,6 @@
     },
     "keywords": [
         "brackets",
-        "adobe",
         "node",
         "nodejs",
         "code",
@@ -70,11 +69,11 @@
     },
     "bugs": {
         "email": "boyan@rabchev.com",
-        "url": "https://github.com/rabchev/node-brackets-module/issues"
+        "url": "https://github.com/rabchev/brackets-server/issues"
     },
     "license": {
         "type": "MIT",
-        "url": "http://github.com/rabchev/node-brackets-module/blob/master/LICENSE"
+        "url": "http://github.com/rabchev/brackets-server/blob/master/LICENSE"
     },
     "engines": { "node": ">=0.10" }
 }

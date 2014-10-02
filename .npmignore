@@ -7,6 +7,9 @@ examples
 test
 Gruntfile.js
 jsdoc.json
-
+CONTRIBUTING.md
+brackets/
 brackets-src
-brackets-ext
+examples
+projects
+hacks
