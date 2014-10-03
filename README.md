@@ -19,6 +19,8 @@ Usage Examples
 
     $ brackets --port 80 --proj-dir /var/projects --supp-dir /var/brackets
 
+**IMPORTANT:** Make sure ***projects*** directory exists.
+
 All arguments are optional.
 
 | Short Option | Long Option  | Default Value     | Description
@@ -55,6 +57,9 @@ Example with Express:
     console.log("Your application is availble at http://localhost:3000");
     console.log("You can access Brackets on http://localhost:3000/brackets/");
 ```
+
+**NOTE:** The default values for `projectsDir` and `supportDir` are different when Brackets Server is initiated from code. They are respectively `./projects` and `./brackets`, relative to the current working directory. Same as the CLI, the ***projects*** directory must exist, otherwise Open and Create project will not work.
+
 Contributing
 ------------
 

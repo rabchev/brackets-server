@@ -1,3 +1,7 @@
+## 0.5.2 - 2014-10-03
+* Brackets version: 0.44.0-0
+* Fixed problem with NPM package causing malfunctioning of Open, Open Folder, Save As, Create new project and extension installations.
+
 ## 0.5.1 - 2014-10-02
 * Brackets version: 0.44.0-0
 * Removed unneeded files from NPM package.
