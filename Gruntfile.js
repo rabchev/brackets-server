@@ -1,7 +1,7 @@
 /*jshint -W106 */
 
 "use strict";
-debugger;
+
 var fs          = require("fs"),
     path        = require("path"),
     _replace    = {
