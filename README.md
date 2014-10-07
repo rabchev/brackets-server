@@ -23,11 +23,12 @@ Usage Examples
 
 All arguments are optional.
 
-| Short Option | Long Option  | Default Value     | Description
-|--------------|--------------|-------------------|------------------------------------------------------------
-| `-p <prot>`  | `--port`     | `6800`            | TCP port on which Brackets server is listening.
-| `-j <dir>`   | `--proj-dir` | `~/Projects`      | Root directory for projects. Directories above this root cannot be accessed.
-| `-s <dir>`   | `--supp-dir` | `~/.brackets-srv` | Root directory for Brackets supporting files such as user extensions, configurations and state persistence.
+| Short Option | Long Option      | Default Value     | Description
+|--------------|------------------|-------------------|------------------------------------------------------------
+| `-p <prot>`  | `--port`         | `6800`            | TCP port on which Brackets server is listening.
+| `-j <dir>`   | `--proj-dir`     | `~/Projects`      | Root directory for projects. Directories above this root cannot be accessed.
+| `-s <dir>`   | `--supp-dir`     | `~/.brackets-srv` | Root directory for Brackets supporting files such as user extensions, configurations and state persistence.
+| `-d`         | `--user-domains` | `false`           |
 
 Embedding Brackets Server in Web Applications
 ---------------------------------------------
