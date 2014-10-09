@@ -30,7 +30,7 @@ All arguments are optional.
 | `-s <dir>`   | `--supp-dir`     | `~/.brackets-srv` | Root directory for Brackets supporting files such as user extensions, configurations and state persistence.
 | `-d`         | `--user-domains` | `false`           | Allows Node domains to be loaded from user extensions.
 
-**NOTE:** Some Brackets extensions require external Node.js process, called node domain. Node domains run on the server, thereby allowing arbitrary code to be executed on the server through custom extensions.  Since this imposes very serious security and stability risks, Brackets Server will not load nor execute domains from user extensions, unless `-d` option is specifiednod.
+**NOTE:** Some Brackets extensions require external Node.js process, called node domain. Node domains run on the server, thereby allowing arbitrary code to be executed on the server through custom extensions.  Since this imposes very serious security and stability risks, Brackets Server will not load nor execute domains from user extensions, unless `-d` option is specified.
 
 Embedding Brackets Server in Web Applications
 ---------------------------------------------

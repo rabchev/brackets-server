@@ -1,3 +1,7 @@
+## 0.5.4 - 2014-10-10
+* Brackets version: 0.44.0-0
+* Fixed, error if projects directory doesn't exist.
+
 ## 0.5.4 - 2014-10-09
 * Brackets version: 0.44.0-0
 * Updated Brackets source to sprint 44
