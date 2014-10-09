@@ -10,6 +10,6 @@ deploy:
     secure: bWt1wLTheu3LjIgmGciF/7X0dZyThMMnWi8TYBpSGNEH0/XzJGsOMeoF1j8aEfhFuM655l10JmOx+jGpWIfxCkHd0uuzDdr9rPiNNRwa5NZkmRWUbv23CCAS26N5/manbiwhpBbZQjCWxusGw24cuxDBaBlGGDkY8uAmIr6rPfE=
   on:
     tags: true
-    repo: rabchev/node-brackets-module
+    repo: rabchev/brackets-server
     node: 0.10
     branch: master

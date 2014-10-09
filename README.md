@@ -5,7 +5,7 @@ Brackets Server is a server for providing hosted version of the popular code edi
 
 The server may be useful for remote development, real-time changes and testing, development form thin clients or devices such as tablets, or it could be used in conjunction with other web applications for collaboration.
 
-To check the current verion of Brackets source used in the server, please see [CHANGELOG](CHANGELOG.md).
+To check the current verion of Brackets source used in the server, please see [CHANGELOG](https://github.com/rabchev/brackets-server/blob/master/CHANGELOG.md).
 
 Installation
 ------------
@@ -30,7 +30,7 @@ All arguments are optional.
 | `-s <dir>`   | `--supp-dir`     | `~/.brackets-srv` | Root directory for Brackets supporting files such as user extensions, configurations and state persistence.
 | `-d`         | `--user-domains` | `false`           | Allows Node domains to be loaded from user extensions.
 
-**NOTE:** Some Brackets extensions require external Node.js process, called node domain. Node domains run on the server, thereby allowing arbitrary code to be executed on the server through custom extensions.  Since this imposes very serious security and stability risks, Brackets Server will not load nor execute domains from user extensions, unless it was explicitly allowed to do so.
+**NOTE:** Some Brackets extensions require external Node.js process, called node domain. Node domains run on the server, thereby allowing arbitrary code to be executed on the server through custom extensions.  Since this imposes very serious security and stability risks, Brackets Server will not load nor execute domains from user extensions, unless `-d` option is specifiednod.
 
 Embedding Brackets Server in Web Applications
 ---------------------------------------------
@@ -61,12 +61,22 @@ Example with Express:
     console.log("You can access Brackets on http://localhost:3000/brackets/");
 ```
 
-**NOTE:** The default values for `projectsDir` and `supportDir` are different when Brackets Server is initiated from code. They are respectively `./projects` and `./brackets`, relative to the current working directory. Same as the CLI, the ***projects*** directory must exist, otherwise Open and Create project will not work.
+**NOTE:** The default values for `projectsDir` and `supportDir` are different when Brackets Server is initiated from code. They are respectively `./projects` and `./brackets`, relative to the current working directory.
+
+Options:
+
+| Option           | Default Value     | Description
+|------------------|-------------------|------------------------------------------------------------
+| httpRoot         | `/brackets`       | Defines the root HTTP endpoint for Brackets Server (http://yourdomain.com/brackets).
+| projectsDir      | `./projects`      | Root directory for projects. Directories above this root cannot be accessed.
+| supportDir       | `./brackets`      | Root directory for Brackets supporting files such as user extensions, configurations and state persistence.
+| allowUserDomains | `false`           | Allows Node domains to be loaded from user extensions.
+
 
 Contributing
 ------------
 
-Please see [`CONTRIBUTING.md`](CONTRIBUTING.md)
+Please see [`CONTRIBUTING.md`](https://github.com/rabchev/brackets-server/blob/master/CONTRIBUTING.md)
 
 License
 -------
