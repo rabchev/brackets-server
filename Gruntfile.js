@@ -519,13 +519,17 @@ module.exports = function (grunt) {
     grunt.registerTask("publish", function() {
         var opts    = {
                 cwd: path.join(__dirname, "brackets-srv")
-            };
+            },
+            arg     = this.args && this.args.length > 0 ? this.args[0] : null,
+            cmd     = arg === "simulate" ? "npm install -g" : "npm publish",
+            folders;
 
         glob("**/node_modules", opts, function (err, files) {
             if (err) {
                 throw err;
             }
 
+            folders = files;
             if (files) {
                 files.sort(function (a, b) {
                     return  b.length - a.length;
@@ -539,12 +543,14 @@ module.exports = function (grunt) {
             }
         });
 
-        var arg     = this.args && this.args.length > 0 ? this.args[0] : null,
-            cmd     = arg === "simulate" ? "npm install -g" : "npm publish",
-            success = shell.exec(cmd).code === 0;
-
-        if (!success) {
+        if (shell.exec(cmd).code !== 0) {
             throw "Execution failed for: " + cmd;
         }
+
+        folders.forEach(function (file) {
+            file = path.join(opts.cwd, file);
+            fs.renameSync(file, file.substr(0, file.length - 1));
+            console.log("file: " + file.substr(0, file.length - 1));
+        });
     });
 };
