@@ -17,7 +17,7 @@
         "send": "^0.9.3",
         "mkdirp": "^0.5.0",
         "rimraf": "^2.2.8",
-        "ncp": "^1.0.1",
+        "ncp": "^1.0.0",
         "commander": "^2.3.0",
         "open": "^0.0.5",
         "socket.io": "^1.1.0",
@@ -46,7 +46,8 @@
         "grunt-contrib-clean": "*",
         "load-grunt-tasks": "*",
         "grunt-text-replace": "*",
-        "q": "0.9.2"
+        "q": "0.9.2",
+        "shelljs": "^0.3.0"
     },
     "keywords": [
         "brackets",
@@ -67,8 +68,6 @@
     ],
     "scripts": {
         "test": "grunt test",
-        "prepublish": "node lib/pre-publish.js",
-        "postpublish": "node lib/post-install.js",
         "postinstall": "node lib/post-install.js"
     },
     "bugs": {

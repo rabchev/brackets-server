@@ -4,6 +4,8 @@
 
 var fs          = require("fs"),
     path        = require("path"),
+    glob        = require("glob"),
+    shell       = require("shelljs"),
     _replace    = {
         // HACK: 1. We have to mock shell app.
         // HACK: 2. Brackets inBrowser behaves very differently, that's why we have to fake it.
@@ -513,4 +515,36 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask("docs", ["jsdoc", "gh-pages"]);
+
+    grunt.registerTask("publish", function() {
+        var opts    = {
+                cwd: path.join(__dirname, "brackets-srv")
+            };
+
+        glob("**/node_modules", opts, function (err, files) {
+            if (err) {
+                throw err;
+            }
+
+            if (files) {
+                files.sort(function (a, b) {
+                    return  b.length - a.length;
+                });
+
+                files.forEach(function (file) {
+                    file = path.join(opts.cwd, file);
+                    fs.renameSync(file, file + "_");
+                    console.log("file: " + file + "_");
+                });
+            }
+        });
+
+        var arg     = this.args && this.args.length > 0 ? this.args[0] : null,
+            cmd     = arg === "simulate" ? "npm install -g" : "npm publish",
+            success = shell.exec(cmd).code === 0;
+
+        if (!success) {
+            throw "Execution failed for: " + cmd;
+        }
+    });
 };
