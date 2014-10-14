@@ -546,8 +546,8 @@ module.exports = function (grunt) {
 
                 files.forEach(function (file) {
                     file = path.join(opts.cwd, file);
-                    fs.renameSync(file, file.substr(0, file.length - 1));
-                    console.log("file: " + file.substr(0, file.length - 1));
+                    fs.renameSync(file + "_", file);
+                    console.log("file: " + file);
                 });
 
                 if (failure) {
