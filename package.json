@@ -1,7 +1,7 @@
 {
     "name": "brackets",
     "description": "Brackets Server is a server for providing hosted version of the popular code editor Brackets.",
-    "version": "0.5.5",
+    "version": "0.5.6",
     "author": "Boyan Rabchev <boyan@rabchev.com>",
     "contributors": [
         { "name": "Boyan Rabchev", "email": "boyan@rabchev.com" }
