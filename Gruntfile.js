@@ -521,7 +521,8 @@ module.exports = function (grunt) {
                 cwd: path.join(__dirname, "brackets-srv")
             },
             arg     = this.args && this.args.length > 0 ? this.args[0] : null,
-            cmd     = arg === "simulate" ? "npm install -g" : "npm publish";
+            cmd     = arg === "simulate" ? "npm install -g" : "npm publish",
+            done    = this.async();
 
         glob("**/node_modules", opts, function (err, files) {
             var failure;
@@ -550,8 +551,9 @@ module.exports = function (grunt) {
                 });
 
                 if (failure) {
-                    throw "Execution failed for: " + cmd;
+                    grunt.fail.fatal(new Error("Execution failed for: " + cmd));
                 }
+                done();
             }
         });
     });
