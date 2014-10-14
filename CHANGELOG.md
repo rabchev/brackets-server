@@ -1,4 +1,8 @@
-## 0.5.4 - 2014-10-10
+## 0.5.6 - 2014-10-10
+* Brackets version: 0.44.0-0
+* Fixed, the problem described in v0.5.2 was not actually fixed.
+
+## 0.5.5 - 2014-10-10
 * Brackets version: 0.44.0-0
 * Fixed, error if projects directory doesn't exist.
 
