@@ -60,4 +60,11 @@ define(function (require, exports) {
             };
         };
     }
+
+    $.ajaxPrefilter(function(options) {
+        if (options.crossDomain) {
+            options.url = window.location.pathname + "proxy/" + encodeURIComponent(options.url);
+            options.crossDomain = false;
+        }
+    });
 });
