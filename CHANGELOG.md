@@ -1,3 +1,9 @@
+## 0.5.7 - 2014-11-04
+* Brackets version: 0.44.0-0
+* Fixed, CORS problem with extensions.
+* Fixed, Node Domains path resolution for extensions.
+* Improvements in Open and Save dialogs.
+
 ## 0.5.6 - 2014-10-10
 * Brackets version: 0.44.0-0
 * Fixed, the problem described in v0.5.2 was not actually fixed.
