@@ -355,7 +355,9 @@ module.exports = function (grunt) {
                             return fs.readFileSync(__dirname + "/embedded-ext/client-fs/lib/file-system.js", { encoding: "utf8" })
                                 .replace(/brackets\.getModule/g, "require")
                                 .replace("require(\"./open-dialog\")", "{}")
-                                .replace("require(\"./save-dialog\")", "{}");
+                                .replace("require(\"./save-dialog\")", "{}")
+                                .replace("require(\"../thirdparty/socket.io\");", "require(\"socket.io\");")
+                                .replace("// init(\"/brackets\");", "init(\"/brackets\");");
                         } else if (moduleName === "utils/NodeConnection") {
                             // HACK: We serve the source from Node, connect to the same instance.
                             return fs.readFileSync(__dirname + "/hacks/NodeConnection.js", { encoding: "utf8" });
