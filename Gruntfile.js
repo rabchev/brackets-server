@@ -396,10 +396,6 @@ module.exports = function(grunt) {
                 {
                     from: "<div id=\"install-drop-zone-mask\"></div>",
                     to: " "
-                },
-                {
-                    from: "</span>",
-                    to: " "
                 }]
             }
         },
