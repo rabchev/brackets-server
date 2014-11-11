@@ -2,11 +2,11 @@
 
 "use strict";
 
-var fs          = require("fs"),
-    path        = require("path"),
-    glob        = require("glob"),
-    shell       = require("shelljs"),
-    _replace    = {
+var fs = require("fs"),
+    path = require("path"),
+    glob = require("glob"),
+    shell = require("shelljs"),
+    _replace = {
         // HACK: 1. We have to mock shell app.
         // HACK: 2. Brackets inBrowser behaves very differently, that's why we have to fake it.
         // HACK: 3. We need the menus in the Browser.
@@ -16,32 +16,26 @@ var fs          = require("fs"),
             value: "global.brackets.app=require(\"hacks.app\");global.brackets.inBrowser=false; global.brackets.nativeMenus=false;global.brackets.fs=require(\"hacks.lowFs\");"
         },
         // HACK: Remove warning dialog about Brackets not been ready for browsers.
-        "brackets": [
-            {
-                match: /\/\/ Let the user know Brackets doesn't run in a web browser yet\s+if \(brackets.inBrowser\) {/,
-                value: "if (false) {"
-            },
-            {
-                match: "!url.match(/^file:\\/\\//) && url !== \"about:blank\" && url.indexOf(\":\") !== -1",
-                varlue: "false"
-            }
-        ],
+        "brackets": [{
+            match: /\/\/ Let the user know Brackets doesn't run in a web browser yet\s+if \(brackets.inBrowser\) {/,
+            value: "if (false) {"
+        }, {
+            match: "!url.match(/^file:\\/\\//) && url !== \"about:blank\" && url.indexOf(\":\") !== -1",
+            varlue: "false"
+        }],
         //  TODO:HACK: For some reason this line causes languageDropdown to be populated before it si initialized. Needs more investigaton.
         "editor/EditorStatusBar": {
             match: "$(LanguageManager).on(\"languageAdded languageModified\", _populateLanguageDropdown);",
             value: "// $(LanguageManager).on(\"languageAdded languageModified\", _populateLanguageDropdown);"
         },
-        "command/DefaultMenus": [
-            {
-                // Browser window cannot be closed from script.
-                match: "if (brackets.platform !== \"mac\" || !brackets.nativeMenus) {",
-                value: "if (false) {"
-            },
-            {
-                match: /menu\.addMenuDivider\(\);\s*menu\.addMenuItem\(Commands.HELP_SHOW_EXT_FOLDER\);/,
-                value: " "
-            }
-        ]
+        "command/DefaultMenus": [{
+            // Browser window cannot be closed from script.
+            match: "if (brackets.platform !== \"mac\" || !brackets.nativeMenus) {",
+            value: "if (false) {"
+        }, {
+            match: /menu\.addMenuDivider\(\);\s*menu\.addMenuItem\(Commands.HELP_SHOW_EXT_FOLDER\);/,
+            value: " "
+        }]
     };
 
 function addCodeMirrorModes(config) {
@@ -49,7 +43,7 @@ function addCodeMirrorModes(config) {
         dirs = fs.readdirSync(root),
         include = config.requirejs.main.options.include;
 
-    dirs.forEach(function (file) {
+    dirs.forEach(function(file) {
         var stat = fs.statSync(root + "/" + file);
         if (stat.isDirectory()) {
             include.push("thirdparty/CodeMirror2/mode/" + file + "/" + file);
@@ -62,7 +56,7 @@ function addDefaultExtesions(config) {
         dirs = fs.readdirSync(root),
         rj = config.requirejs;
 
-    dirs.forEach(function (file) {
+    dirs.forEach(function(file) {
         var stat = fs.statSync(root + "/" + file);
 
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -78,11 +72,11 @@ function addDefaultExtesions(config) {
                     optimize: "uglify2",
                     uglify2: {},
                     paths: {
-                        "text" : "../../../thirdparty/text/text",
-                        "i18n" : "../../../thirdparty/i18n/i18n",
+                        "text": "../../../thirdparty/text/text",
+                        "i18n": "../../../thirdparty/i18n/i18n",
                     },
-//                    generateSourceMaps: true,
-//                    useSourceUrl: true,
+                    //                    generateSourceMaps: true,
+                    //                    useSourceUrl: true,
                     wrap: false
                 }
             };
@@ -90,27 +84,27 @@ function addDefaultExtesions(config) {
             rj[file] = mod;
 
             // The code below solves some of the problems with JavaScriptCodeHints optimization.
-//            if (file === "JavaScriptCodeHints") {
-//                mod.options.onBuildRead = function (moduleName, path, contents) {
-//                    return contents.replace("== \"use strict\"", "== \"use\\ strict\"");
-//                };
-//
-//                rj.ternWorker = {
-//                    options: {
-//                        name: "tern-worker",
-//                        out: "brackets-dist/extensions/default/JavaScriptCodeHints/tern-worker.js",
-//                        baseUrl: "brackets-src/src/extensions/default/JavaScriptCodeHints/",
-//                        preserveLicenseComments: false,
-//                        optimize: "uglify2",
-//                        uglify2: {},
-//                        paths: {
-//                            "text" : "../../../thirdparty/text/text",
-//                            "i18n" : "../../../thirdparty/i18n/i18n",
-//                        },
-//                        wrap: false
-//                    }
-//                };
-//            }
+            //            if (file === "JavaScriptCodeHints") {
+            //                mod.options.onBuildRead = function (moduleName, path, contents) {
+            //                    return contents.replace("== \"use strict\"", "== \"use\\ strict\"");
+            //                };
+            //
+            //                rj.ternWorker = {
+            //                    options: {
+            //                        name: "tern-worker",
+            //                        out: "brackets-dist/extensions/default/JavaScriptCodeHints/tern-worker.js",
+            //                        baseUrl: "brackets-src/src/extensions/default/JavaScriptCodeHints/",
+            //                        preserveLicenseComments: false,
+            //                        optimize: "uglify2",
+            //                        uglify2: {},
+            //                        paths: {
+            //                            "text" : "../../../thirdparty/text/text",
+            //                            "i18n" : "../../../thirdparty/i18n/i18n",
+            //                        },
+            //                        wrap: false
+            //                    }
+            //                };
+            //            }
         }
     });
 }
@@ -120,7 +114,7 @@ function addEmbeddedExtesions(config) {
         dirs = fs.readdirSync(root),
         rj = config.requirejs;
 
-    dirs.forEach(function (file) {
+    dirs.forEach(function(file) {
         var mod = {
             options: {
                 name: "main",
@@ -130,11 +124,11 @@ function addEmbeddedExtesions(config) {
                 optimize: "uglify2",
                 uglify2: {},
                 paths: {
-                    "text" : "../../brackets-src/src/thirdparty/text/text",
-                    "i18n" : "../../brackets-src/src/thirdparty/i18n/i18n",
+                    "text": "../../brackets-src/src/thirdparty/text/text",
+                    "i18n": "../../brackets-src/src/thirdparty/i18n/i18n",
                 },
-//                generateSourceMaps: true,
-//                useSourceUrl: true,
+                //                generateSourceMaps: true,
+                //                useSourceUrl: true,
                 wrap: false
             }
         };
@@ -143,10 +137,12 @@ function addEmbeddedExtesions(config) {
     });
 }
 
-module.exports = function (grunt) {
+module.exports = function(grunt) {
 
     // load dependencies
-    require("load-grunt-tasks")(grunt, {pattern: ["grunt-*"]});
+    require("load-grunt-tasks")(grunt, {
+        pattern: ["grunt-*"]
+    });
     //grunt.loadTasks("tasks");
 
     var config = {
@@ -185,7 +181,7 @@ module.exports = function (grunt) {
                 options: {
                     stdout: true
                 },
-                command: function (target) {
+                command: function(target) {
                     if (process.platform === "win32") {
                         return "grunt-debug test:" + target;
                     }
@@ -224,8 +220,7 @@ module.exports = function (grunt) {
         },
         copy: {
             dist: {
-                files: [
-                    {
+                files: [{
                         "brackets-dist/index.html": "brackets-src/src/.index.html"
 
                     },
@@ -263,13 +258,13 @@ module.exports = function (grunt) {
                         dest: "brackets-srv/",
                         cwd: "brackets-src/src/",
                         src: [
-                            "extensions/default/StaticServer/node/**",
-                            "extensibility/node/**",
-                            "!extensibility/node/ExtensionManagerDomain.js"
-                        ] //,
-//                        rename: function(dest, src) {
-//                            return dest + src.replace(/node_modules/g, "_node_modules");
-//                        }
+                                "extensions/default/StaticServer/node/**",
+                                "extensibility/node/**",
+                                "!extensibility/node/ExtensionManagerDomain.js"
+                            ] //,
+                            //                        rename: function(dest, src) {
+                            //                            return dest + src.replace(/node_modules/g, "_node_modules");
+                            //                        }
                     },
                     /* Node domains */
                     {
@@ -340,11 +335,11 @@ module.exports = function (grunt) {
                         "hacks.lowFs": "../../hacks/low-level-fs",
                         "socket.io": "../../node_modules/socket.io/node_modules/socket.io-client/socket.io"
                     },
-                    onBuildRead: function (moduleName, path, contents) {
+                    onBuildRead: function(moduleName, path, contents) {
                         var rpl = _replace[moduleName];
                         if (rpl) {
                             if (Array.isArray(rpl)) {
-                                rpl.forEach(function (el) {
+                                rpl.forEach(function(el) {
                                     contents = contents.replace(el.match, el.value);
                                 });
                                 return contents;
@@ -352,7 +347,9 @@ module.exports = function (grunt) {
                             return contents.replace(rpl.match, rpl.value);
                         } else if (moduleName === "fileSystemImpl") {
                             // HACK: For in browser loading we need to replace file system implementation very early to avoid exceptions.
-                            return fs.readFileSync(__dirname + "/embedded-ext/client-fs/lib/file-system.js", { encoding: "utf8" })
+                            return fs.readFileSync(__dirname + "/embedded-ext/client-fs/lib/file-system.js", {
+                                    encoding: "utf8"
+                                })
                                 .replace(/brackets\.getModule/g, "require")
                                 .replace("require(\"./open-dialog\")", "{}")
                                 .replace("require(\"./save-dialog\")", "{}")
@@ -360,22 +357,48 @@ module.exports = function (grunt) {
                                 .replace("// init(\"/brackets\");", "init(\"/brackets\");");
                         } else if (moduleName === "utils/NodeConnection") {
                             // HACK: We serve the source from Node, connect to the same instance.
-                            return fs.readFileSync(__dirname + "/hacks/NodeConnection.js", { encoding: "utf8" });
+                            return fs.readFileSync(__dirname + "/hacks/NodeConnection.js", {
+                                encoding: "utf8"
+                            });
                         }
                         return contents;
                     },
-//                    generateSourceMaps: true,
-//                    useSourceUrl: true,
+                    //                    generateSourceMaps: true,
+                    //                    useSourceUrl: true,
                     wrap: false
                 }
             }
         },
         replace: {
             dist: {
-                src: "brackets-src/src/.index.html",
+                src: ["brackets-src/src/.index.html", "brackets-src/src/htmlContent/extension-manager-dialog.html"],
                 overwrite: true,
                 replacements: [{
                     from: "<!-- build:js main.js -->",
+                    to: " "
+                },
+                {
+                    from: "<span id=\"install-drop-zone\" class=\"btn left drag\">",
+                    to: " "
+                },
+                {
+                    from: "<span class=\"install-drag-message\">{{Strings.INSTALL_EXTENSION_DRAG}} <a class=\"install-from-url\">{{Strings.INSTALL_FROM_URL}}</a></span>",
+                    to: " "
+                },
+                {
+                    from: "<span class=\"install-drop-message\">{{Strings.INSTALL_EXTENSION_DROP}}</span>",
+                    to: " "
+                },
+                {
+                    from: "<span class=\"install-validating-message\">{{Strings.INSTALL_EXTENSION_VALIDATING}}</span>",
+                    to: " "
+                },
+                {
+                    from: "<div id=\"install-drop-zone-mask\"></div>",
+                    to: " "
+                },
+                {
+                    from: "</span>",
                     to: " "
                 }]
             }
@@ -425,32 +448,29 @@ module.exports = function (grunt) {
                 options: {
                     mode: "gzip"
                 },
-                files: [
-                    {
-                        expand: true,
-                        cwd: "brackets-dist/",
-                        src: [
-                            "**/*.js",
-                            "!samples/**",
-                            "!extensions/default/new-project/templateFiles/**"
-                        ],
-                        extDot: "last",
-                        dest: "brackets-dist/",
-                        ext: ".js.gz"
-                    },
-                    {
-                        expand: true,
-                        cwd: "brackets-dist/",
-                        src: [
-                            "**/*.css",
-                            "!samples/**",
-                            "!extensions/default/new-project/templateFiles/**"
-                        ],
-                        extDot: "last",
-                        dest: "brackets-dist/",
-                        ext: ".css.gz"
-                    }
-                ]
+                files: [{
+                    expand: true,
+                    cwd: "brackets-dist/",
+                    src: [
+                        "**/*.js",
+                        "!samples/**",
+                        "!extensions/default/new-project/templateFiles/**"
+                    ],
+                    extDot: "last",
+                    dest: "brackets-dist/",
+                    ext: ".js.gz"
+                }, {
+                    expand: true,
+                    cwd: "brackets-dist/",
+                    src: [
+                        "**/*.css",
+                        "!samples/**",
+                        "!extensions/default/new-project/templateFiles/**"
+                    ],
+                    extDot: "last",
+                    dest: "brackets-dist/",
+                    ext: ".css.gz"
+                }]
             }
         }
     };
@@ -460,14 +480,14 @@ module.exports = function (grunt) {
     addCodeMirrorModes(config);
     grunt.initConfig(config);
 
-    var common  = require("./brackets-src/tasks/lib/common")(grunt),
-        build   = require("./brackets-src/tasks/build")(grunt);
+    var common = require("./brackets-src/tasks/lib/common")(grunt),
+        build = require("./brackets-src/tasks/build")(grunt);
 
-    grunt.registerTask("build-config", "Update config.json with the build timestamp, branch and SHA being built", function () {
+    grunt.registerTask("build-config", "Update config.json with the build timestamp, branch and SHA being built", function() {
         var done = this.async(),
             distConfig = grunt.file.readJSON("brackets-src/src/config.json");
 
-        build.getGitInfo(path.resolve("./brackets-src")).then(function (gitInfo) {
+        build.getGitInfo(path.resolve("./brackets-src")).then(function(gitInfo) {
             distConfig.version = distConfig.version.substr(0, distConfig.version.lastIndexOf("-") + 1) + gitInfo.commits;
             distConfig.repository.SHA = gitInfo.sha;
             distConfig.repository.branch = gitInfo.branch;
@@ -476,7 +496,7 @@ module.exports = function (grunt) {
             common.writeJSON(grunt, "brackets-dist/config.json", distConfig);
 
             done();
-        }, function (err) {
+        }, function(err) {
             grunt.log.writeln(err);
             done(false);
         });
@@ -498,7 +518,7 @@ module.exports = function (grunt) {
         "build-config"
     ]);
 
-    grunt.registerTask("test", function () {
+    grunt.registerTask("test", function() {
         var arg = "all";
         if (this.args && this.args.length > 0) {
             arg = this.args[0];
@@ -507,7 +527,7 @@ module.exports = function (grunt) {
         grunt.task.run(["simplemocha:" + arg]);
     });
 
-    grunt.registerTask("test-debug", function () {
+    grunt.registerTask("test-debug", function() {
         var arg = "all";
         if (this.args && this.args.length > 0) {
             arg = this.args[0];
@@ -519,14 +539,14 @@ module.exports = function (grunt) {
     grunt.registerTask("docs", ["jsdoc", "gh-pages"]);
 
     grunt.registerTask("publish", function() {
-        var opts    = {
+        var opts = {
                 cwd: path.join(__dirname, "brackets-srv")
             },
-            arg     = this.args && this.args.length > 0 ? this.args[0] : null,
-            cmd     = arg === "simulate" ? "npm install -g" : "npm publish",
-            done    = this.async();
+            arg = this.args && this.args.length > 0 ? this.args[0] : null,
+            cmd = arg === "simulate" ? "npm install -g" : "npm publish",
+            done = this.async();
 
-        glob("**/node_modules", opts, function (err, files) {
+        glob("**/node_modules", opts, function(err, files) {
             var failure;
 
             if (err) {
@@ -534,11 +554,11 @@ module.exports = function (grunt) {
             }
 
             if (files) {
-                files.sort(function (a, b) {
-                    return  b.length - a.length;
+                files.sort(function(a, b) {
+                    return b.length - a.length;
                 });
 
-                files.forEach(function (file) {
+                files.forEach(function(file) {
                     file = path.join(opts.cwd, file);
                     fs.renameSync(file, file + "_");
                     console.log("file: " + file + "_");
@@ -546,7 +566,7 @@ module.exports = function (grunt) {
 
                 failure = shell.exec(cmd).code;
 
-                files.forEach(function (file) {
+                files.forEach(function(file) {
                     file = path.join(opts.cwd, file);
                     fs.renameSync(file + "_", file);
                     console.log("file: " + file);
