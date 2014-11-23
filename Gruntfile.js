@@ -371,30 +371,10 @@ module.exports = function(grunt) {
         },
         replace: {
             dist: {
-                src: ["brackets-src/src/.index.html", "brackets-src/src/htmlContent/extension-manager-dialog.html"],
+                src: ["brackets-src/src/.index.html"],
                 overwrite: true,
                 replacements: [{
                     from: "<!-- build:js main.js -->",
-                    to: " "
-                },
-                {
-                    from: "<span id=\"install-drop-zone\" class=\"btn left drag\">",
-                    to: " "
-                },
-                {
-                    from: "<span class=\"install-drag-message\">{{Strings.INSTALL_EXTENSION_DRAG}} <a class=\"install-from-url\">{{Strings.INSTALL_FROM_URL}}</a></span>",
-                    to: " "
-                },
-                {
-                    from: "<span class=\"install-drop-message\">{{Strings.INSTALL_EXTENSION_DROP}}</span>",
-                    to: " "
-                },
-                {
-                    from: "<span class=\"install-validating-message\">{{Strings.INSTALL_EXTENSION_VALIDATING}}</span>",
-                    to: " "
-                },
-                {
-                    from: "<div id=\"install-drop-zone-mask\"></div>",
                     to: " "
                 }]
             }
