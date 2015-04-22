@@ -81,8 +81,8 @@ function addDefaultExtesions(config) {
                         "text" : "../../../thirdparty/text/text",
                         "i18n" : "../../../thirdparty/i18n/i18n",
                     },
-//                    generateSourceMaps: true,
-//                    useSourceUrl: true,
+                    generateSourceMaps: true,
+                    useSourceUrl: true,
                     wrap: false
                 }
             };
@@ -133,8 +133,8 @@ function addEmbeddedExtesions(config) {
                     "text" : "../../brackets-src/src/thirdparty/text/text",
                     "i18n" : "../../brackets-src/src/thirdparty/i18n/i18n",
                 },
-//                generateSourceMaps: true,
-//                useSourceUrl: true,
+                generateSourceMaps: true,
+                useSourceUrl: true,
                 wrap: false
             }
         };
@@ -264,6 +264,8 @@ module.exports = function (grunt) {
                         cwd: "brackets-src/src/",
                         src: [
                             "extensions/default/StaticServer/node/**",
+                            "LiveDevelopment/MultiBrowserImpl/transports/node/**",
+                            "LiveDevelopment/MultiBrowserImpl/launchers/node/**",
                             "extensibility/node/**",
                             "!extensibility/node/ExtensionManagerDomain.js"
                         ] //,
@@ -364,8 +366,8 @@ module.exports = function (grunt) {
                         }
                         return contents;
                     },
-//                    generateSourceMaps: true,
-//                    useSourceUrl: true,
+                    generateSourceMaps: true,
+                    useSourceUrl: true,
                     wrap: false
                 }
             }
