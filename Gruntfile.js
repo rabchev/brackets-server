@@ -57,6 +57,18 @@ function addCodeMirrorModes(config) {
     });
 }
 
+//function addCodeMirrorFold(config) {
+//    var root = path.join(__dirname, "brackets-src", "src", "thirdparty", "CodeMirror2", "addon", "fold"),
+//        dirs = fs.readdirSync(root),
+//        include = config.requirejs.main.options.include;
+//
+//    dirs.forEach(function (file) {
+//        if (path.extname(file) === ".js") {
+//            include.push("thirdparty/CodeMirror2/addon/fold/" + file);
+//        }
+//    });
+//}
+
 function addDefaultExtesions(config) {
     var root = path.join(__dirname, "brackets-src", "src", "extensions", "default"),
         dirs = fs.readdirSync(root),
@@ -86,6 +98,17 @@ function addDefaultExtesions(config) {
                     wrap: false
                 }
             };
+
+            // HealtData extension is placeing its menu item after HELP_SHOW_EXT_FOLDER, but we remove that one and
+            // that is causing exeception in command manager.
+            if (file === "HealthData") {
+                mod.options.onBuildRead = function (moduleName, path, contents) {
+                    if (moduleName === "main") {
+                        return contents.replace(/HELP_SHOW_EXT_FOLDER/g, "HELP_CHECK_FOR_UPDATE");
+                    }
+                    return contents;
+                };
+            }
 
             rj[file] = mod;
 
@@ -253,6 +276,7 @@ module.exports = function (grunt) {
                             "!extensions/default/*/unittest-files/**",
                             "extensions/dev/*",
                             "thirdparty/CodeMirror2/lib/{,*/}*.css",
+                            "thirdparty/CodeMirror2/addon/fold/**",
                             "thirdparty/i18n/*.js",
                             "thirdparty/text/*.js"
                         ]
