@@ -21,6 +21,10 @@ Usage Examples
 
 **IMPORTANT:** Make sure ***projects*** directory exists.
 
+**IMPORTANT:** Brackets Server cannot work simultaneously on the same machine with the desktop Brackets because of 
+port conflict in one of the build-in modules. The error thrown is: "Error: listen EADDRINUSE". 
+To workaround this problem if you ever need to use bouth simultaneously, run Brackets Server in Docker container.
+
 All arguments are optional.
 
 | Short Option | Long Option      | Default Value     | Description

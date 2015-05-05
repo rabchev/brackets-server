@@ -1,3 +1,8 @@
+## 0.5.8 - 2014-05-05
+* Brackets version: 1.3
+* Fixed, issues with Brackets v1.3. (LiveDevelopment, HealthData)
+* Fixed, version number of socket.io: issue #6
+
 ## 0.5.7 - 2014-11-04
 * Brackets version: 0.44.0-0
 * Fixed, CORS problem with extensions.
