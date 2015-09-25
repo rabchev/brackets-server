@@ -45,14 +45,14 @@ var fs          = require("fs"),
     };
 
 function addCodeMirrorModes(config) {
-    var root = path.join(__dirname, "brackets-src", "src", "thirdparty", "CodeMirror2", "mode"),
+    var root = path.join(__dirname, "brackets-src", "src", "thirdparty", "CodeMirror", "mode"),
         dirs = fs.readdirSync(root),
         include = config.requirejs.main.options.include;
 
     dirs.forEach(function (file) {
         var stat = fs.statSync(root + "/" + file);
         if (stat.isDirectory()) {
-            include.push("thirdparty/CodeMirror2/mode/" + file + "/" + file);
+            include.push("thirdparty/CodeMirror/mode/" + file + "/" + file);
         }
     });
 }
@@ -275,8 +275,8 @@ module.exports = function (grunt) {
                             "extensions/default/*/**/*.{css,less,json,svg,png}",
                             "!extensions/default/*/unittest-files/**",
                             "extensions/dev/*",
-                            "thirdparty/CodeMirror2/lib/{,*/}*.css",
-                            "thirdparty/CodeMirror2/addon/fold/**",
+                            "thirdparty/CodeMirror/lib/{,*/}*.css",
+                            "thirdparty/CodeMirror/addon/fold/**",
                             "thirdparty/i18n/*.js",
                             "thirdparty/text/*.js"
                         ]
@@ -291,7 +291,8 @@ module.exports = function (grunt) {
                             "LiveDevelopment/MultiBrowserImpl/transports/node/**",
                             "LiveDevelopment/MultiBrowserImpl/launchers/node/**",
                             "extensibility/node/**",
-                            "!extensibility/node/ExtensionManagerDomain.js"
+                            "!extensibility/node/ExtensionManagerDomain.js",
+                            "search/node/**"
                         ] //,
 //                        rename: function(dest, src) {
 //                            return dest + src.replace(/node_modules/g, "_node_modules");
