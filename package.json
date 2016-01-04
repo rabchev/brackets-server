@@ -4,8 +4,11 @@
     "version": "0.5.8",
     "author": "Boyan Rabchev <boyan@rabchev.com>",
     "contributors": [
-        { "name": "Boyan Rabchev", "email": "boyan@rabchev.com" }
-    ],
+        {
+            "name": "Boyan Rabchev",
+            "email": "boyan@rabchev.com"
+    }
+  ],
     "repository": "https://github.com/rabchev/brackets-server.git",
     "main": "./lib/server",
     "preferGlobal": "true",
@@ -14,19 +17,18 @@
         "brackets-server": "./bin/run.js"
     },
     "dependencies": {
-        "send": "^0.9.3",
-        "mkdirp": "^0.5.0",
-        "rimraf": "^2.2.8",
-        "ncp": "^1.0.0",
         "commander": "^2.3.0",
+        "glob": "^4.0.6",
+        "mkdirp": "^0.5.0",
+        "ncp": "^1.0.0",
         "open": "^0.0.5",
-        "socket.io": "1.1.0",
-        "glob": "^4.0.6"
+        "rimraf": "^2.2.8",
+        "send": "^0.9.3",
+        "socket.io": "1.1.0"
     },
     "devDependencies": {
         "mocha": "*",
         "chai": "*",
-        "sinon-chai": "*",
         "supertest": "*",
         "grunt": "*",
         "grunt-release": "*",
@@ -50,22 +52,22 @@
         "shelljs": "^0.3.0"
     },
     "keywords": [
-        "brackets",
-        "node",
-        "nodejs",
-        "code",
-        "editor",
-        "web",
-        "project",
-        "application",
-        "management",
-        "dev",
-        "development",
-        "javascript",
-        "html",
-        "css",
-        "ide"
-    ],
+    "brackets",
+    "node",
+    "nodejs",
+    "code",
+    "editor",
+    "web",
+    "project",
+    "application",
+    "management",
+    "dev",
+    "development",
+    "javascript",
+    "html",
+    "css",
+    "ide"
+  ],
     "scripts": {
         "test": "grunt test",
         "postinstall": "node lib/post-install.js"
@@ -78,5 +80,7 @@
         "type": "MIT",
         "url": "http://github.com/rabchev/brackets-server/blob/master/LICENSE"
     },
-    "engines": { "node": ">=0.10" }
+    "engines": {
+        "node": ">=0.10"
+    }
 }

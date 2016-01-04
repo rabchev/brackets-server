@@ -365,7 +365,7 @@ module.exports = function (grunt) {
                     paths: {
                         "hacks.app": "../../hacks/app",
                         "hacks.lowFs": "../../hacks/low-level-fs",
-                        "socket.io": "../../node_modules/socket.io/node_modules/socket.io-client/socket.io"
+                        "socket.io": "../../node_modules/socket.io-client/socket.io"
                     },
                     onBuildRead: function (moduleName, path, contents) {
                         var rpl = _replace[moduleName];

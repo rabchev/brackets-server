@@ -33,6 +33,26 @@ To debug client scripts, open Gruntfile.js and uncomment all occurrences of:
     //   useSourceUrl: true,
 ```
 
+Steps to update Adobe Brackets source code
+------------------------------------------
+
+NOTE: Usually, updating Brackets source requires fixing conflicts and compatibility issues with Brackets Server.
+
+```shell
+
+$ git clone https://github.com/rabchev/brackets-server.git
+$ git submodule update --init
+$ cd brackets-src
+$ git fetch --tags
+$ git checkout tags/[release_tag_name]
+$ cd ..
+$ git commit -am "Updated Brackets source to verion ..."
+$ git submodule update --init --recursive
+$ npm install
+$ grunt build
+
+```
+
 Directory Structure
 -------------------
 
