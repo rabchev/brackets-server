@@ -77,9 +77,7 @@
     "email": "boyan@rabchev.com",
     "url": "https://github.com/rabchev/brackets-server/issues"
   },
-  "license": {
-    "type": "MIT"
-  },
+  "license": "MIT",
   "engines": {
     "node": ">=0.10"
   }
