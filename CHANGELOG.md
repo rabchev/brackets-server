@@ -1,3 +1,7 @@
+## 0.1.0 - 2017-05-22
+* Brackets version: 1.8
+* Initial release.
+
 ## 0.5.8 - 2014-05-05
 * Brackets version: 1.3
 * Fixed, issues with Brackets v1.3. (LiveDevelopment, HealthData)
@@ -25,7 +29,7 @@
 
 ## 0.5.3 - 2014-10-06
 * Brackets version: 0.44.0-beta
-* Automatically creates new projects root directory if it doesnâ€™t exist.
+* Automatically creates new projects root directory if it doesn’t exist.
 
 ## 0.5.2 - 2014-10-03
 * Brackets version: 0.44.0-beta

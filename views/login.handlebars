@@ -1,0 +1,33 @@
+<div>
+    <script src="https://cdn.auth0.com/js/lock/10.3/lock.min.js"></script>
+    <script>
+        /*var lock = new Auth0Lock('{{env.AUTH0_CLIENT_ID}}', '{{env.AUTH0_DOMAIN}}');
+
+                      lock.show({
+                        closable: false,
+                        redirectUrl: '{{env.AUTH0_CALLBACK_URL}}',
+                        responseType: 'code',
+                        params: {
+         scope: 'openid name email picture'
+                        }
+                      });*/
+        var lock = new Auth0Lock('{{env.AUTH0_CLIENT_ID}}', '{{env.AUTH0_DOMAIN}}', {
+            auth: {
+                redirectUrl: '{{env.AUTH0_CALLBACK_URL}}',
+                responseType: 'code',
+                params: {
+                    scope: 'openid name email picture'
+                }
+            },
+            languageDictionary: {
+                title: "Spinups.io"
+            },
+            theme: {
+                logo: 'https://spinups.io/wp-content/uploads/2016/10/mstile-150x150.png'
+            }
+        });
+
+        lock.show();
+
+    </script>
+</div>

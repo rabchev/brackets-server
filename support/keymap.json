@@ -1,0 +1,22 @@
+{
+    "documentation": "https://github.com/adobe/brackets/wiki/User-Key-Bindings",
+    "overrides": {
+        "Alt-N": "file.newDoc",
+        "Alt-O":   "file.open",
+        "Alt-W": "file.close",
+        "Shift-Alt-O": "file.openFolder",
+        "Shift-Alt-W": "file.close_all",
+        "Shift-Alt-L": "edit.splitSelIntoLines",
+        "Alt-/": "edit.lineComment",
+        "Shift-Alt-/": "edit.blockComment",
+        "Alt-T": "navigate.gotoDefinition",
+        "Alt-J": "navigate.jumptoDefinition",
+        "Ctrl-Right": "navigate.nextDoc",
+        "Ctrl-Left": "navigate.prevDoc",
+        "Alt-Q": "navigate.toggleQuickEdit",
+        "Alt-K": "navigate.toggleQuickDocs",
+        "Shift-F1": "help.support",
+        "Alt-Up": "cmd.findPrevious",
+        "Alt-Down": "cmd.findNext"
+    }
+}

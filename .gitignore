@@ -17,3 +17,5 @@ brackets/
 brackets-dist
 brackets-srv
 projects
+.tmp
+.env
