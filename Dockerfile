@@ -31,7 +31,6 @@ RUN addgroup nodespeed && \
     usermod -a -G nodespeed root && \
     echo 'nodespeed ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
     chown -R nodespeed /var/log/supervisor /var/run && \
-    # Create projects dirs (shuld really be in separate data containers)
     mkdir -p /projects && \
     mkdir -p /projects/.brackets-server
 
@@ -56,6 +55,8 @@ RUN mkdir -p /var/log/supervisor && \
     chown -R nodespeed:nodespeed /var/log/supervisor && \
     chown -R nodespeed:nodespeed /projects && \
     chmod 0777 -R /var/log/supervisor && \
+    cp /var/brackets-server/docker/scripts/* / && \
+    cp /var/brackets-server/docker/conf/* /etc/supervisor/conf.d/ && \
     rm -fr /var/brackets-server/embedded-ext && \
     rm -fr /var/brackets-server/docker && \
     rm -fr /var/brackets-server/hacks && \

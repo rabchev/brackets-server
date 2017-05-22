@@ -101,6 +101,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:whoGloo/nodespeed-ide.git"
+    "url": "https://github.com/whoGloo/brackets-server.git"
   }
 }

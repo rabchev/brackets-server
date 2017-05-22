@@ -5,18 +5,20 @@ nodeSpeed IDE is a server for providing hosted version of the popular code edito
 
 It is initially based on the project [Brackets Server](https://github.com/rabchev/brackets-server). Thanks to [Boyan Rabchev](https://github.com/rabchev) for starting this project. 
 
-The Brackets code editor can be loaded directly in the web browser and it doesn’t require additional installations or browser extensions. Brackets works just like the desktop version, except that all projects and files reside on the server instead of the local file system.
+The nodeSpeed IDE implementation uses a node express server and also includes passport modules to interact with [Auth0](https://auth0.com/) for user authentication. 
 
-nodeSpeed IDE is mainly intended to be used with an implementation with Docker containers, making it fast and easy to spin up and run a hosted development environment. 
+The Brackets code editor can be loaded directly in the web browser and it doesn’t require additional installations or browser extensions. Brackets works just like the desktop version, except that all projects and files reside on the server instead of the local file system. 
+
+nodeSpeed IDE is intended to be used with an implementation with Docker containers, making it fast and easy to spin up and run a hosted development environment. All of our testing is therefore done by running in a Docker environment. 
 
 To check the current verion of Brackets source used in the server, please see [CHANGELOG](https://github.com/whoGloo/nodespeed-ide/blob/master/CHANGELOG.md).
 
 ## Installation
 Install the nodeSpeed IDE with one of the following options: 
 - By cloning building and runinng
-- By building a docker image and runing the IDE from one or more containers using Docker
-- By pulling and running a pre-built Docker image `whogloo/nodespeed-ide` and using this
-- **The easy way out**: Sign up for an account and spin up an instance in minutes on [Spinups.io](https://spinups.io) 
+- By building a docker image and running the IDE from one or more containers using Docker
+- By pulling and running a pre-built Docker image `whogloo/nodespeed-ide` and using this in `docker run` scripts.
+- Sign up for an account on [Spinups.io](https://spinups.io), spin up an instance of nodeSpeed Development and get started in minutes.  
 
 ## Usage Examples
 ### Environment variables
@@ -34,11 +36,7 @@ To start from command line, use a command like the one below from the IDE instal
 node nodespeedide --supp-dir /projects/.brackets-server -j /projects
 ```
 
-**IMPORTANT:** Make sure the ***/projects*** directory exists.
-
-**IMPORTANT:** nodeSpeed IDE cannot work simultaneously on the same machine with the desktop Brackets because of 
-port conflict in one of the build-in modules. The error thrown is: "Error: listen EADDRINUSE". 
-To workaround this problem if you ever need to use bouth simultaneously, run Brackets Server in Docker container.
+**IMPORTANT:** Make sure the **/projects** directory exists.
 
 All arguments are optional.
 
