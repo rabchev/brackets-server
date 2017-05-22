@@ -40,6 +40,8 @@ For example:
 VIRTUAL_HOST=nodespeed-ide.whogloo.com:6800,tty-nodespeed-ide.whogloo.com:8080,preview-nodespeed-ide.whogloo.com:3000,wss-nodespeed-ide.whogloo.com:9485 
 ```
 
+The `VIRTUAL_HOST` URL's must be defined in the above order. The nodeSpeed Terminal process currently depends the `tty-<base url>` being the second entry in the list. 
+
 NB: An reverse proxy (e.g. nginx-proxy), Load Balancer or DNS entries pointing to the container URLs will need to be in place. 
 
 To start from command line, use a command like the one below from the IDE installation directory: 
