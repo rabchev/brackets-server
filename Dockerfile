@@ -1,4 +1,4 @@
-FROM node
+FROM ubuntu:16.04
 MAINTAINER Thomas Hansen "thomas-docker@whogloo.com"
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -6,21 +6,22 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN DEBIAN_FRONTEND=noninteractive \
   apt-get update && \
   apt-get install -y \
-  wget \
   supervisor \
   build-essential \
   curl \
-  libssl-dev \
+  wget \
   git \
   vim \
   zip \
   sudo \
   man && \
-  sed -i 's/^\(\[supervisord\]\)$/\1\nnodaemon=true/' /etc/supervisor/supervisord.conf  && \
   rm -rf /var/lib/apt/lists/* && \
   apt-get clean && \
   apt-get -y autoremove && apt-get -y clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+  sed -i 's/^\(\[supervisord\]\)$/\1\nnodaemon=true/' /etc/supervisor/supervisord.conf  && \
+  curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash - && \
+  apt-get install -y nodejs && \
   npm install -g grunt-cli && \
   npm cache clean
 
@@ -29,23 +30,28 @@ RUN addgroup nodespeed && \
     useradd --system -g nodespeed --uid 1000 -m -s /bin/bash nodespeed && \
     usermod -a -G nodespeed root && \
     echo 'nodespeed ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
-    chown -R nodespeed /var/log/supervisor /var/run
-
-RUN mkdir -p /projects && \
+    chown -R nodespeed /var/log/supervisor /var/run && \
+    # Create projects dirs (shuld really be in separate data containers)
+    mkdir -p /projects && \
     mkdir -p /projects/.brackets-server
 
 # Clone and build the nodeSpeed IDE
 WORKDIR /var
-RUN git clone https://github.com/whoGloo/nodespeed-ide.git
-
-WORKDIR /var/brackets-server
-RUN git submodule update --init --recursive && \
+RUN git clone https://github.com/whoGloo/brackets-server.git && \
+    cd /var/brackets-server && \
+    git submodule update --init --recursive && \
     npm install && \
     grunt build
+
+#WORKDIR /var/brackets-server
+#RUN git submodule update --init --recursive && \
+#    npm install && \
+#    grunt build
 
 # Add the supervisor files used to start the IDE and Terminal processes when the code container starts
 ADD conf/ /etc/supervisor/conf.d/
 
+#  Make sure we have the correct permissions for the nodespeed user to be able to use supervisor and the IDE
 RUN mkdir -p /var/log/supervisor && \
     chown -R nodespeed:nodespeed /var/log/supervisor && \
     chown -R nodespeed:nodespeed /projects && \
