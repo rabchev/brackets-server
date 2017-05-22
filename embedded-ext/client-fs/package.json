@@ -1,0 +1,38 @@
+{
+  "name": "socket-io-fs",
+  "title": "Remote Project",
+  "description": "Connect to and work on remote project via Socket.IO.",
+  "version": "0.0.1",
+  "license": "MIT",
+  "homepage": "https://github.com/rabchev/socket-io-fs",
+  "author": {
+    "name": "Boyan Rabchev",
+    "email": "boyan@rabchev.com",
+    "url": "https://github.com/rabchev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rabchev/socket-io-fs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rabchev/socket-io-fs/issues",
+    "email": "boyan@rabchev.com"
+  },
+  "keywords": [
+    "file system",
+    "remote",
+    "socket.io",
+    "project",
+    "files"
+  ],
+  "engines": {
+    "brackets": ">=0.40.0"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "dependencies": {
+    "socket.io-client": "^1.7.3"
+  },
+  "devDependencies": {}
+}

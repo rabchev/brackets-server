@@ -1,3 +1,6 @@
 [submodule "brackets-src"]
 	path = brackets-src
 	url = https://github.com/whoGloo/brackets.git
+[submodule "embedded-ext/client-fs"]
+	path = embedded-ext/client-fs
+	url = https://github.com/whoGloo/brackets-remote-fs.git
