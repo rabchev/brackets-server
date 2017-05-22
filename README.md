@@ -24,11 +24,23 @@ Install the nodeSpeed IDE with one of the following options:
 ### Environment variables
 To use the authentication and sign-in features of nodeSpeed Development, you will need a valid [Auth0](https://auth0.com/) account and have a client created with valid callback URLs for returning to your IDE URL after successful authentication.
 
-The following environment variable should be set on the machine (or Docker container) that the IDE is being launched from:  
+The following environment variables should be set on the machine (or Docker container) that the IDE is being launched from:  
+#### Authentication : 
 - **`NODESPEED_AUTHENTICATION_APPLICATION`**: Auth0 Client ID
 - **`NODESPEED_AUTHENTICATION_SECRET`**: Auth0 Client Secret
 - **`NODESPEED_AUTHENTICATION_DOMAIN`**: Auth0 Domain
 - **`NODESPEED_AUTHENTICATION_CALLBACK_URL`**: Auth0 Callback URL
+
+#### URLs for virtual hosts
+**`VIRTUAL_HOST`** 
+This is a variable often used by nginx-proxy containers to define URLS to access container services with. `nodespeedide.js` uses this variable to determine URLs for the IDE, the terminal, preview and web-scokets. 
+For example: 
+
+```
+VIRTUAL_HOST=nodespeed-ide.whogloo.com:6800,tty-nodespeed-ide.whogloo.com:8080,preview-nodespeed-ide.whogloo.com:3000,wss-nodespeed-ide.whogloo.com:9485 
+```
+
+NB: An reverse proxy (e.g. nginx-proxy), Load Balancer or DNS entries pointing to the container URLs will need to be in place. 
 
 To start from command line, use a command like the one below from the IDE installation directory: 
 
