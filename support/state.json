@@ -1,0 +1,50 @@
+{
+    "problems-panel": {
+        "visible": false
+    },
+    "welcomeProjects": [
+        ""
+    ],
+    "projectPath": "/projects/",
+    "afterFirstLaunch": "true",
+    "project": {
+        "/projects/": {
+            "project.treeState": [],
+            "code-folding.folds": {
+                "/projects/.nodespeed-ide/state.json": {}
+            }
+        }
+    },
+    "HealthData.Logs": {
+        "fileStats": {
+            "openedFileExt": {
+                "html": 1,
+                "json": 2
+            },
+            "workingSetFileExt": {
+                "html": 1,
+                "json": 1
+            }
+        },
+        "ProjectDetails": {
+            "prj929492837": {
+                "numFiles": null
+            },
+            "prj-998696838": {
+                "numFiles": null
+            }
+        }
+    },
+    "sidebar": {
+        "visible": true
+    },
+    "nextHealthDataSendTime": 1460453771398,
+    "workingSetSortMethod": "cmd.sortWorkingSetByAdded",
+    "auto-install-extensions": {},
+    "extensionUpdateInfo": [],
+    "lastExtensionRegistryCheckTime": 1460451972660,
+    "healthDataNotificationShown": true,
+    "recentProjects": [
+        "/projects"
+    ]
+}

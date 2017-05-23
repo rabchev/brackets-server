@@ -1,7 +1,7 @@
 define(function (require, exports) {
     "use strict";
 
-    var fs              = require("fileSystemImpl"),
+    var fs = require("fileSystemImpl"),
         FileSystemError = require("filesystem/FileSystemError");
 
     function StatMap(stats) {
@@ -37,10 +37,15 @@ define(function (require, exports) {
         fs.copyFile(src, dest, callback);
     }
 
+    function readFile(path, options, callback) {
+        fs.readFile(path, options, callback);
+    }
+
     exports.stat = stat;
     exports.makedir = makedir;
     exports.readdir = readdir;
     exports.copyFile = copyFile;
+    exports.readFile = readFile;
 
     exports.NO_ERROR = null;
     exports.ERR_NOT_FOUND = FileSystemError.NOT_FOUND;

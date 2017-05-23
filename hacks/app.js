@@ -7,6 +7,9 @@ define(function (require, exports) {
         return "/support";
     };
 
+    exports.getFsSupportDirectory = function () {
+        return "/projects/.brackets-server";
+    };
 
     exports.getUserDocumentsDirectory = function () {
         return "/projects";
@@ -31,7 +34,9 @@ define(function (require, exports) {
 
     exports.openURLInDefaultBrowser = function (url) {
         var win = window.open(url, "_blank");
-        win.focus();
+        if (win) {
+            win.focus();
+        }
     };
 
     exports.quit = function () {
@@ -47,21 +52,10 @@ define(function (require, exports) {
         callback("Not supported.");
     };
 
-    var Fn = Function, global = (new Fn("return this"))();
-    if (!global.Mustache.compile) {
-        global.Mustache.compile = function (template) {
-            // This operation parses the template and caches
-            // the resulting token tree. All future calls to
-            // mustache.render can now skip the parsing step.
-            global.Mustache.parse(template);
+    var Fn = Function,
+        global = (new Fn("return this"))();
 
-                return function (view, partials) {
-                return global.Mustache.render(template, view, partials);
-            };
-        };
-    }
-
-    $.ajaxPrefilter(function(options) {
+    $.ajaxPrefilter(function (options) {
         if (options.crossDomain) {
             options.url = window.location.pathname + "proxy/" + encodeURIComponent(options.url);
             options.crossDomain = false;

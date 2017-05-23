@@ -18,7 +18,7 @@
     "noempty"       : true,     // true: Prohibit use of empty blocks
     "nonew"         : true,     // true: Prohibit use of constructors for side-effects (without assignment)
     "plusplus"      : false,    // true: Prohibit use of `++` & `--`
-    "quotmark"      : "single", // Quotation mark consistency:
+    "quotmark"      : "double", // Quotation mark consistency:
     //   false    : do nothing (default)
     //   true     : ensure whatever is used is consistent
     //   "single" : require single quotes
@@ -61,13 +61,13 @@
     "validthis"     : false,     // true: Tolerate using this in a non-constructor function
 
     // Environments
-    "browser"       : false,    // Web Browser (window, document, etc)
+    "browser"       : true,     // Web Browser (window, document, etc)
     "couch"         : false,    // CouchDB
     "devel"         : true,     // Development/debugging (alert, confirm, etc)
     "dojo"          : false,    // Dojo Toolkit
-    "jquery"        : false,    // jQuery
+    "jquery"        : true,     // jQuery
     "mootools"      : false,    // MooTools
-    "node"          : true,     // Node.js
+    "node"          : false,    // Node.js
     "nonstandard"   : false,    // Widely adopted globals (escape, unescape, etc)
     "prototypejs"   : false,    // Prototype and Scriptaculous
     "rhino"         : false,    // Rhino
@@ -82,5 +82,9 @@
     "white"         : false,    // true: Check against strict whitespace and indentation rules
 
     // Custom Globals
-    "globals"       : {}        // additional predefined global variables
+    "globals"       : {
+        "brackets"  : true,
+        "define"    : true,
+        "Mustache"   : true
+    }        // additional predefined global variables
 }

@@ -1,20 +1,20 @@
 Contributing
 ============
 
-Steps to build Brackets Server
-------------------------------
+Steps to build nodeSpeed IDE
+----------------------------
 
 Grunt CLI is a prerequisite.
 
 ```shell
-    $ git clone https://github.com/rabchev/brackets-server.git
+    $ git clone https://github.com/whoGloo/nodespeed-ide.git
     $ cd brackets-server
     $ git submodule update --recursive --init
     $ npm install
     $ grunt build
 ```
 
-To start Brackets Server:
+To start nodeSpeed IDE Server:
 
 ```shell
     $ node bin/run -d
@@ -40,13 +40,13 @@ NOTE: Usually, updating Brackets source requires fixing conflicts and compatibil
 
 ```shell
 
-$ git clone https://github.com/rabchev/brackets-server.git
+$ git clone https://github.com/whoGloo/nodespeed-ide.git
 $ git submodule update --init
 $ cd brackets-src
 $ git fetch --tags
 $ git checkout tags/[release_tag_name]
 $ cd ..
-$ git commit -am "Updated Brackets source to verion ..."
+$ git commit -am "Updated Brackets source to version ..."
 $ git submodule update --init --recursive
 $ npm install
 $ grunt build
@@ -60,7 +60,7 @@ Directory Structure
 - **embedded-ext** - Contains embedded Brackets extensions. All extensions located in this folder are optimized and copied to `/brackets-dist/extensions/default` folder at build time.
 - **brackets-dist** - This is the output folder of the build process. All client script and CSS files are minified, combined and then copied to this folder. Some scripts are modified or replaced with hacked versions during optimization phase.
 - **brackets-srv** - Contains default Node.js domains, e.g. `StaticServerDomain` and `ExtensionMangerDomain`. These are separated from brackets-dist folder as brackets-dist is meant to contain only client side scripts.
-- **haks** - Contains scripts that replace their original counterparts entirely. For more details, please see the comments in the files. These files may require extra care when upgrading newer Brackets source.
+- **hacks** - Contains scripts that replace their original counterparts entirely. For more details, please see the comments in the files. These files may require extra care when upgrading newer Brackets source.
 
 **NOTE:** `brackets-dist` and `brackets-src` are deleted and recreated entirely on every build. That’s why they are excluded from Git. The following folders are not necessary at run time and therefore they are excluded from the NPM package: `brackets-src`, `embedded-ext`, `hacks`, `examples`, `test`.
 

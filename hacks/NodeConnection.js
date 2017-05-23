@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
+ * Copyright (c) 2013 - present Adobe Systems Incorporated. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -45,13 +45,13 @@ define(function (require, exports, module) {
      * connection timeout even if we try to connect to a port that isn't open.
      * @type {number}
      */
-    var CONNECTION_TIMEOUT  = 10000; // 10 seconds
+    var CONNECTION_TIMEOUT = 10000; // 10 seconds
 
     /**
      * Milliseconds to wait before retrying connecting
      * @type {number}
      */
-    var RETRY_DELAY         = 500;   // 1/2 second
+    var RETRY_DELAY = 500; // 1/2 second
 
     /**
      * Maximum value of the command ID counter
@@ -96,28 +96,30 @@ define(function (require, exports, module) {
                     });
 
                     ws.on("error", function (data) {
+                        console.log("Socket error", data);
+
                         deferred.reject(data);
                     });
                 }
 
                 // Expect ArrayBuffer objects from Node when receiving binary
                 // data instead of DOM Blobs, which are the default.
-//                ws.binaryType = "arraybuffer";
+                //                ws.binaryType = "arraybuffer";
 
                 // If the server port isn't open, we get a close event
                 // at some point in the future (and will not get an onopen
                 // event)
-//                ws.onclose = function () {
-//                    deferred.reject("WebSocket closed");
-//                };
+                //                ws.onclose = function () {
+                //                    deferred.reject("WebSocket closed");
+                //                };
 
-//                ws.onopen = function () {
-//                    // If we successfully opened, remove the old onclose
-//                    // handler (which was present to detect failure to
-//                    // connect at all).
-//                    ws.onclose = null;
-//                    deferred.resolveWith(null, [ws, port]);
-//                };
+                //                ws.onopen = function () {
+                //                    // If we successfully opened, remove the old onclose
+                //                    // handler (which was present to detect failure to
+                //                    // connect at all).
+                //                    ws.onclose = null;
+                //                    deferred.resolveWith(null, [ws, port]);
+                //                };
             } else {
                 deferred.reject("brackets.app.getNodeState error: " + err);
             }
@@ -238,7 +240,7 @@ define(function (require, exports, module) {
             } catch (e) { }
         }
         var failedDeferreds = this._pendingInterfaceRefreshDeferreds
-        .concat(this._pendingCommandDeferreds);
+            .concat(this._pendingCommandDeferreds);
         failedDeferreds.forEach(function (d) {
             d.reject("cleanup");
         });
@@ -490,14 +492,19 @@ define(function (require, exports, module) {
                 }
 
                 // Event type "domain:event"
-                EventDispatcher.triggerWithArray(this, m.message.domain + ":" + m.message.event,
-+                                             m.message.parameters);
+                EventDispatcher.triggerWithArray(this, m.message.domain + ":" + m.message.event, m.message.parameters);
                 break;
             case "commandResponse":
                 responseDeferred = this._pendingCommandDeferreds[m.message.id];
                 if (responseDeferred) {
                     responseDeferred.resolveWith(this, [m.message.response]);
                     delete this._pendingCommandDeferreds[m.message.id];
+                }
+                break;
+            case "commandProgress":
+                responseDeferred = this._pendingCommandDeferreds[m.message.id];
+                if (responseDeferred) {
+                    responseDeferred.notifyWith(this, [m.message.message]);
                 }
                 break;
             case "commandError":
@@ -512,7 +519,7 @@ define(function (require, exports, module) {
                 break;
             case "error":
                 console.error("[NodeConnection] received error: " +
-                              m.message.message);
+                    m.message.message);
                 break;
             default:
                 console.error("[NodeConnection] unknown event type: " + m.type);
@@ -547,11 +554,12 @@ define(function (require, exports, module) {
                     var parameters = Array.prototype.slice.call(arguments, 0);
                     var id = self._getNextCommandID();
                     self._pendingCommandDeferreds[id] = deferred;
-                    self._send({id: id,
-                                domain: domainName,
-                                command: commandSpec.name,
-                                parameters: parameters
-                               });
+                    self._send({
+                        id: id,
+                        domain: domainName,
+                        command: commandSpec.name,
+                        parameters: parameters
+                    });
                     return deferred;
                 };
             }
@@ -576,8 +584,10 @@ define(function (require, exports, module) {
 
         if (this.connected()) {
             $.getJSON("/brackets-ext/api")
-            .done(refreshInterfaceCallback)
-            .fail(function (err) { deferred.reject(err); });
+                .done(refreshInterfaceCallback)
+                .fail(function (err) {
+                    deferred.reject(err);
+                });
         } else {
             deferred.reject("Attempted to call _refreshInterface when not connected.");
         }

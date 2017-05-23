@@ -1,0 +1,131 @@
+#rfs-files-dialog {
+    td {
+        &.checkbox-column {
+            vertical-align: middle;
+            width: 13px;
+        }
+        &.icons-column {
+            padding-left: 13px;
+            width: 24px;
+            height: 24px;
+        }
+        &.status-column {
+            width: 100%;
+            vertical-align: middle;
+        }
+        &.selected {
+            background-color: #288edf;
+            color: #fff;
+        }
+    }
+    label {
+        display: inline;
+        padding-right: 10px;
+    }
+    h1 {
+        display: inline;
+    }
+}
+
+#rfs-trail {
+    overflow-x: scroll;
+    ul {
+        padding: 0;
+        margin: 0;
+    }
+    li {
+        display: inline;
+        line-height: 30px;
+        white-space: nowrap;
+        list-style-type: none;
+        margin-left: 3px;
+        padding: 5px  10px 5px 10px;
+        border: 1px solid;
+        border-radius: 3px;
+        border-color: rgba(0, 0, 0, 0.3);
+        background-color: rgba(0, 0, 0, 0.1);
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.25);
+            border-color: rgba(0, 0, 0, 0.45);
+        }
+        &.curr {
+            background-color: rgba(0, 0, 0, 0.25);
+            border-color: rgba(0, 0, 0, 0.45);
+        }
+    }
+}
+
+#rfs-files-list {
+    position: relative;
+    overflow-y: auto;
+    min-height: 200px;
+    max-height: 200px;
+}
+
+#rfs-save-name {
+    padding-left: 0px;
+    float: left;
+    width: 420px;
+    overflow: scroll;
+    text-align: left;
+    line-height: 12px;
+}
+
+#rfs-file-name {
+    width: 350px;
+}
+
+#rfs-create-folder {
+    float: right;
+}
+
+#rfs-create-folder-dialog {
+    input {
+        width: 100%;
+        display: block;
+    }
+}
+
+#rfs-msg {
+    color: #ff0000;
+}
+
+.rfs-body {
+    overflow-y: visible;
+    padding-right: 30px;
+}
+
+.rfs-file {
+}
+
+.rfs-disabled {
+    tr {
+        &:hover {
+            background-color: rgba(0, 0, 0, 0) !important;
+        }
+    }
+    td {
+        color: #a3a3a3 !important;
+    }
+}
+
+.rfs-icon {
+    background-size: 100%;
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    &.dir {
+        background: url("icons/folder.svg") no-repeat 0 0;
+        background-color: rgba(0, 0, 0, 0.1);
+        border: 1px solid;
+        border-radius: 3px;
+        border-color: rgba(0, 0, 0, 0.3);
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.25);
+            border-color: rgba(0, 0, 0, 0.45);
+        }
+    }
+    &.file {
+        background: url("icons/file.svg") no-repeat 0 0;
+    }
+}

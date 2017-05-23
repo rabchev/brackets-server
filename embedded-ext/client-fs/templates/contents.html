@@ -1,0 +1,19 @@
+<div id="rfs-trail">
+    <ul>
+        {{#trail}}<li {{#curr}}class="{{curr}}"{{/curr}} data-path="{{path}}">{{name}}</li>{{/trail}}
+    </ul>
+</div>
+<div id="rfs-files-list">
+    <table class="bottom-panel-table table table-striped table-condensed">
+        <tbody>
+            {{#files}}
+            <tr class="rfs-file {{disabled}}" data-path="{{fullPath}}" title={{fullPath}}>
+                <td class="icons-column">
+                    <div class="rfs-icon {{type}}" {{#isDirectory}}title="{{OPEN_FOLDER}}"{{/isDirectory}}></div>
+                </td>
+                <td>{{name}}</td>
+            </tr>
+            {{/files}}
+        </tbody>
+    </table>
+</div>
