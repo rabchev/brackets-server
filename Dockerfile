@@ -14,12 +14,12 @@ RUN DEBIAN_FRONTEND=noninteractive \
   vim \
   zip \
   sudo \
+  iputils-ping \
   man && \
   rm -rf /var/lib/apt/lists/* && \
   apt-get clean && \
   apt-get -y autoremove && apt-get -y clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-  sed -i 's/^\(\[supervisord\]\)$/\1\nnodaemon=true/' /etc/supervisor/supervisord.conf  && \
   curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash - && \
   apt-get install -y nodejs && \
   npm install -g grunt-cli && \
@@ -36,25 +36,20 @@ RUN addgroup nodespeed && \
 
 # Clone and build the nodeSpeed IDE
 WORKDIR /var
-RUN git clone https://github.com/whoGloo/brackets-server.git && \
+RUN git clone https://github.com/whoGloo/nodespeed-ide.git brackets-server && \
     cd /var/brackets-server && \
     git submodule update --init --recursive && \
     npm install && \
     grunt build
 
-#WORKDIR /var/brackets-server
-#RUN git submodule update --init --recursive && \
-#    npm install && \
-#    grunt build
-
-# Add the supervisor files used to start the IDE and Terminal processes when the code container starts
-ADD conf/ /etc/supervisor/conf.d/
+WORKDIR /var/brackets-server
 
 #  Make sure we have the correct permissions for the nodespeed user to be able to use supervisor and the IDE
 RUN mkdir -p /var/log/supervisor && \
     chown -R nodespeed:nodespeed /var/log/supervisor && \
     chown -R nodespeed:nodespeed /projects && \
     chmod 0777 -R /var/log/supervisor && \
+    cp /var/brackets-server/docker/supervisor/supervisord.conf /etc/supervisor/supervisord.conf && \
     cp /var/brackets-server/docker/scripts/* / && \
     cp /var/brackets-server/docker/conf/* /etc/supervisor/conf.d/ && \
     rm -fr /var/brackets-server/embedded-ext && \
@@ -70,10 +65,8 @@ RUN mkdir -p /var/log/supervisor && \
 
 USER nodespeed
 
-ADD docker/scripts/ /
-
-# Expose the IDE port, the Terminal port and the application runtime preview port
-EXPOSE 6800 8080 3000
+# Expose the IDE port, the Terminal port, the application runtime preview port and the websockets port
+EXPOSE 6800 8080 3000 9485
 VOLUME ["/projects", "/var/brackets-server"]
 
 CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]

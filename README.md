@@ -1,17 +1,15 @@
-nodeSpeed IDE
-=============
-
+# nodeSpeed IDE
 nodeSpeed IDE is a server for providing hosted version of the popular code editor [Brackets](http://brackets.io/). 
 
-It is initially based on the project [Brackets Server](https://github.com/rabchev/brackets-server). Thanks to [Boyan Rabchev](https://github.com/rabchev) for starting this project. 
+ndoeSpeed IDE is initially based on the [Brackets Server](https://github.com/rabchev/brackets-server) project. Thanks to [Boyan Rabchev](https://github.com/rabchev) for starting this project. As it is no longer being actively maintained, we have decided to launch our fork as a project with a new name.  
 
-The nodeSpeed IDE implementation uses a node express server and also includes passport modules to interact with [Auth0](https://auth0.com/) for user authentication. 
+nodeSpeed IDE uses a node.js Express server and includes an implementation of [xterm.js](https://github.com/sourcelair/xterm.js/) toprovide browser based terminal access. 
 
-The Brackets code editor can be loaded directly in the web browser and it doesn’t require additional installations or browser extensions. Brackets works just like the desktop version, except that all projects and files reside on the server instead of the local file system. 
+The Brackets code editor can be loaded directly in a web browser. It doesn’t require additional installations or browser extensions. Brackets works just like the desktop version, except that all projects and files reside on the server instead of the local file system. 
 
-nodeSpeed IDE is intended to be used with an implementation with Docker containers, making it fast and easy to spin up and run a hosted development environment. All of our testing is therefore done by running in a Docker environment. 
+nodeSpeed IDE is mainly intended to be used with an implementation with Docker containers, making it fast and easy to spin up and run a hosted development environment. All of our testing is therefore done by running in a Docker environment. 
 
-To check the current verion of Brackets source used in the server, please see [CHANGELOG](https://github.com/whoGloo/nodespeed-ide/blob/master/CHANGELOG.md).
+nodeSpeed IDE is currently based on Brackets 1.8. To check the current verion of Brackets source used in the server, please see [CHANGELOG](https://github.com/whoGloo/nodespeed-ide/blob/master/CHANGELOG.md).
 
 ## Installation
 Install the nodeSpeed IDE with one of the following options: 
@@ -21,29 +19,7 @@ Install the nodeSpeed IDE with one of the following options:
 - Sign up for an account on [Spinups.io](https://spinups.io), spin up an instance of nodeSpeed Development and get started in minutes.  
 
 ## Usage Examples
-### Environment variables
-To use the authentication and sign-in features of nodeSpeed Development, you will need a valid [Auth0](https://auth0.com/) account and have a client created with valid callback URLs for returning to your IDE URL after successful authentication.
-
-The following environment variables should be set on the machine (or Docker container) that the IDE is being launched from:  
-#### Authentication : 
-- **`NODESPEED_AUTHENTICATION_APPLICATION`**: Auth0 Client ID
-- **`NODESPEED_AUTHENTICATION_SECRET`**: Auth0 Client Secret
-- **`NODESPEED_AUTHENTICATION_DOMAIN`**: Auth0 Domain
-- **`NODESPEED_AUTHENTICATION_CALLBACK_URL`**: Auth0 Callback URL
-
-#### URLs for virtual hosts
-**`VIRTUAL_HOST`** 
-This is a variable often used by nginx-proxy containers to define URLS to access container services with. `nodespeedide.js` uses this variable to determine URLs for the IDE, the terminal, preview and web-scokets. 
-For example: 
-
-```
-VIRTUAL_HOST=nodespeed-ide.whogloo.com:6800,tty-nodespeed-ide.whogloo.com:8080,preview-nodespeed-ide.whogloo.com:3000,wss-nodespeed-ide.whogloo.com:9485 
-```
-
-The `VIRTUAL_HOST` URL's must be defined in the above order. The nodeSpeed Terminal process currently depends the `tty-<base url>` being the second entry in the list. 
-
-NB: An reverse proxy (e.g. nginx-proxy), Load Balancer or DNS entries pointing to the container URLs will need to be in place. 
-
+### Command line
 To start from command line, use a command like the one below from the IDE installation directory: 
 
 ```
@@ -74,11 +50,42 @@ Options:
 | supportDir       | `./brackets`      | Root directory for Brackets supporting files such as user extensions, configurations and state persistence.
 | allowUserDomains | `false`           | Allows Node domains to be loaded from user extensions.
 
+### From Docker
+To run from Docker, the following steps are needed. 
 
+##### Docker Image
+Build image of nodeSpeed IDE using the Dockerfile included in the project and and the files in the `docker`sub-directory 
+
+or  
+
+Pull a pre-built image from [whogloo/nodespeed-ide](https://hub.docker.com/r/whogloo/nodespeed-ide/) on Docker Hub. 
+
+#### Run with Docker 
+
+Create a data container to store code and files so that they are not lost during updates of the image: 
+
+```
+docker create --name nodespeed-ide-data -v /projects -v /projects/.brackets-server -v /home/nodespeed -v /tmp busybox 
+```
+
+Run nodeSpeed IDE with Docker from the command line: 
+
+ ```
+ docker run -d --name nodespeed-ide --volumes-from nodespeed-ide-data -p 6800:6800 -p 8080:8080 -p 3000:3000 -p 9485:9485 whogloo/nodespeed-ide 
+ ```
+ 
+ **NB: ** The following ports must be exposed from the Docker container: 
+ 
+ - `6800` Default IDE port
+ - `8080` Terminal Port 
+ - `3000` Port for testing applicatiosn running inside the container
+ - `9485` Web Sockets access for terminal instance
+ 
 ## Suggested Brackets extensions
 As part of the hosted version of nodeSpeed IDE (ndoeSpeed Development), a number of Brackets extensions have been developed or forked and updated to work in the nodeSpeed IDE. These extensions add extra functionality to the IDE in various ways. 
 
 The following is a list of suggested nodeSpeed IDE specific extensions: 
+
 - [**brackets-nodespeed-custom**](https://github.com/whoGloo/brackets-nodespeed-custom): This is our main custom project and it adds extra menu items to the IDE, including extra navigation menu items for **Terminal** (nodeSpeed Terminal in a separate browser tab) and **Preview** (preview of applications run from the IDE using port 3000). 
 - [**nodespeed-terminal**](https://github.com/whoGloo/nodespeed-terminal): Node Express project with Golden Layout used to implement a multi instance terminal that can run in a separate tab browser, attaching to the bash shell of the IDE machine (normally a Docker container)
 - [**brackets-file-upload**](https://github.com/whoGloo/brackets-file-upload): Extension to provide upload and download of files and directories from the IDE
@@ -92,16 +99,12 @@ It has been necessary to modify some of the extensions for them to work with the
 
 There are several other extensioons that could be recommended for a productive implementation of nodeSpeed IDE. Suggestions are welcome. 
 
-
-Contributing
-------------
+# Contributing
 Please review issue for this project and if you don't find an existing issue that covers what you are looking for - feel free to log one. We welcome bug reports, suggestions for new or changed features and even more - PRs from those brave enough to contribute working changes.  
 
 Please see [`CONTRIBUTING.md`](https://github.com/whoGloo/nodespeed-ide/blob/master/CONTRIBUTING.md)
 
-License
--------
-
+# License
 MIT License
 
 Copyright (c) 2017 whoGloo, Inc.
@@ -123,3 +126,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+
+nodeSpeed is a registered trademark of [whoGloo, Inc.](https://whogloo.io). 

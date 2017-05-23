@@ -5,18 +5,32 @@
 
 ```
 cd docker 
-. make.sh 
+./make.sh 
 ```
 
 This will build a node Docker image using the latest build from master of nodeSpeed IDE. 
 
-If you are using a fork of this project,make sure to adjust the Dockerfile accordingly. 
+If you are using a fork of this project, make sure to adjust the Dockerfile accordingly. 
 
 ## How to use this image
 
 Start in normal mode:
 
-    $ docker run -d -p 6800:6800 -p 8080:8080 -p 3000:3000 --name nodespeed-ide -v /home/myname/projects:/projects nodespeed-ide 
+    $ docker run -d -p 6800:6800 -p 8080:8080 -p 3000:3000 -p 9485:9485 --name nodespeed-ide -v /home/myname/projects:/projects nodespeed-ide 
+
+Start in normal mode with a data container:
+
+Create the re-usable data container: 
+
+```
+docker create --name nodespeed-ide-data -v nodespeed-ide-data-projects:/projects -v nodespeed-ide-data-projects-brackets:/projects/.brackets-server -v nodespeed-ide-data-home:/home/nodespeed busybox
+```       
+
+run the container : 
+
+```
+docker run --name nodespeed-ide --volumes-from nodespeed-ide-data -d -p 6800:6800 -p 8080:8080 -p 3000:3000 -p 9485:9485 nodespeed-ide 
+```
 
 Open browser and navigate to http://localhost:6800
 
