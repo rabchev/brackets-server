@@ -13,32 +13,25 @@
         app = express(),
         archiver = require('archiver'),
         server = http.createServer(app),
-        cookieParser = require('cookie-parser'),
         bodyParser = require('body-parser'),
-        session = require('express-session'),
-        passport = require('passport'),
-        Auth0Strategy = require('passport-auth0'),
-        ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn(),
         debug = require('debug')('nodespeed-ide-server'),
         fs = require('fs');
 
-    var https = require("https"),
-        send = require("send"),
-        urlUtil = require("url"),
-        files = require("./lib/files"),
-        domains = require("./lib/domains/socket"),
-        socket = require("socket.io"),
+    var https = require('https'),
+        send = require('send'),
+        urlUtil = require('url'),
+        files = require('./lib/files'),
+        domains = require('./lib/domains/socket'),
+        socket = require('socket.io'),
         brckDist = {
-            root: path.join(__dirname, "./brackets-dist")
+            root: path.join(__dirname, './brackets-dist')
         },
         zipped = {
-            ".js": "application/javascript",
-            ".css": "text/css"
+            '.js': 'application/javascript',
+            '.css': 'text/css'
         };
 
-    var id_token = '';
-
-    const fileSystem = require("./lib/file-sys/native");
+    const fileSystem = require('./lib/file-sys/native');
 
     commander
         .version(pkg.version)
@@ -61,23 +54,23 @@
     debug('Using port ' + opts.port);
 
     let removeTrailingSlash = ((path) => {
-        return path[path.length - 1] === "/" ? path.substr(0, path.length - 1) : path;
+        return path[path.length - 1] === '/' ? path.substr(0, path.length - 1) : path;
     });
 
     let inst = {
-        httpRoot: "/brackets",
+        httpRoot: '/brackets',
         httpServer: server,
         io: socket(server),
-        defaultExtensions: path.join(brckDist.root, "extensions"),
-        supportDir: removeTrailingSlash(opts.supportDir || path.resolve("./support")),
-        projectsDir: removeTrailingSlash(opts.projectsDir || path.resolve("./projects")),
-        samplesDir: removeTrailingSlash(opts.samplesDir || path.join(brckDist.root, "samples")),
+        defaultExtensions: path.join(brckDist.root, 'extensions'),
+        supportDir: removeTrailingSlash(opts.supportDir || path.resolve('./support')),
+        projectsDir: removeTrailingSlash(opts.projectsDir || path.resolve('./projects')),
+        samplesDir: removeTrailingSlash(opts.samplesDir || path.join(brckDist.root, 'samples')),
         allowUserDomains: opts.allowUserDomains || false,
         fileSystem
     };
 
     inst.fileSystem.mkdir(inst.projectsDir, function (err) {
-        if (err && err.code !== "EEXIST") {
+        if (err && err.code !== 'EEXIST') {
             throw err;
         }
 
@@ -97,25 +90,25 @@
         if (req.url.startsWith(inst.httpRoot)) {
             var url = req.url.substr(inst.httpRoot.length);
 
-            if (url === "") {
+            if (url === '') {
                 res.writeHead(301, {
-                    Location: inst.httpRoot + "/"
+                    Location: inst.httpRoot + '/'
                 });
                 res.end();
                 return;
             }
 
-            if (url === "/") {
-                url = "/index.html";
+            if (url === '/') {
+                url = '/index.html';
             }
 
-            if (url.startsWith("/proxy/")) {
-                var reqUrl = decodeURIComponent(url.substr("/proxy/".length)),
+            if (url.startsWith('/proxy/')) {
+                var reqUrl = decodeURIComponent(url.substr('/proxy/'.length)),
                     options = urlUtil.parse(reqUrl),
-                    httpClient = options.protocol === "http" ? http : https;
+                    httpClient = options.protocol === 'http' ? http : https;
 
                 delete options.protocol;
-                options.method = "GET";
+                options.method = 'GET';
 
                 req.pause();
                 var connector = httpClient.request(options, function (_res) {
@@ -137,75 +130,38 @@
 
             var cntType = zipped[path.extname(url)];
             if (cntType) {
-                send(req, url + ".gz", brckDist)
-                    .on("headers", function (_res) {
-                        _res.setHeader("Content-Encoding", "gzip");
-                        _res.setHeader("Content-Type", cntType);
+                send(req, url + '.gz', brckDist)
+                    .on('headers', function (_res) {
+                        _res.setHeader('Content-Encoding', 'gzip');
+                        _res.setHeader('Content-Type', cntType);
                     })
                     .pipe(res);
                 return;
             }
 
             send(req, url, brckDist).pipe(res);
-        } else if (req.url.startsWith("/support/extensions/")) {
+        } else if (req.url.startsWith('/support/extensions/')) {
 
             try {
-                return send(req, req.url.substr("/support/extensions".length), {
+                return send(req, req.url.substr('/support/extensions'.length), {
                     root: opts.supportDir + '/extensions'
                 }).pipe(res);
             } catch (e) {
                 res.writeHead(500, {
-                    "Content-Length": e.message.length,
-                    "Content-Type": "text/plain"
+                    'Content-Length': e.message.length,
+                    'Content-Type': 'text/plain'
                 });
                 res.end(e.message);
             }
         } else {
 
-            debug('Unhandled request ' + req.url)
+            debug('Unhandled request ' + req.url);
             res.render('error', {
                 title: 'Error',
                 message: 'not found'
             });
         }
     };
-
-    var vhost = process.env.VIRTUAL_HOST.split(',')[0];
-    vhost = vhost.substring(0, vhost.length - 5);
-
-    var env = {
-        AUTH0_CLIENT_ID: process.env.NODESPEED_AUTHENTICATION_APPLICATION,
-        AUTH0_CLIENT_SECRET: process.env.NODESPEED_AUTHENTICATION_SECRET,
-        AUTH0_DOMAIN: process.env.NODESPEED_AUTHENTICATION_DOMAIN,
-        AUTH0_CALLBACK_URL: process.env.NODESPEED_AUTHENTICATION_CALLBACK_URL
-    };
-
-    debug('Using AUTH0_CLIENT_ID: ' + env.AUTH0_CLIENT_ID);
-    debug('Using AUTH0_DOMAIN ' + env.AUTH0_DOMAIN);
-    debug('Using AUTH0_CALLBACK_URL ' + env.AUTH0_CALLBACK_URL);
-
-    // This will configure Passport to use Auth0
-    var strategy = new Auth0Strategy({
-        domain: env.AUTH0_DOMAIN,
-        clientID: env.AUTH0_CLIENT_ID,
-        clientSecret: env.AUTH0_CLIENT_SECRET,
-        callbackURL: env.AUTH0_CALLBACK_URL
-    }, function (accessToken, refreshToken, extraParams, profile, done) {
-        id_token = extraParams.id_token;
-        debug('Access token retrieved ' + id_token);
-        return done(null, profile);
-    });
-
-    passport.use(strategy);
-
-    // you can use this section to keep a smaller payload
-    passport.serializeUser(function (user, done) {
-        done(null, user);
-    });
-
-    passport.deserializeUser(function (user, done) {
-        done(null, user);
-    });
 
     // view engine setup
     app.set('views', path.join(__dirname, 'views'));
@@ -220,67 +176,11 @@
     app.use(bodyParser.urlencoded({
         extended: false
     }));
-    app.use(cookieParser());
-    app.use(function (req, res, next) {
-        var cookie = req.cookies.id_token;
-
-        if (id_token != cookie) {
-            res.cookie('id_token', id_token, {
-                maxAge: 900000,
-                httpOnly: false
-            });
-        }
-
-        next();
-    });
-    app.use(session({
-        secret: env.AUTH0_CLIENT_SECRET,
-        resave: false,
-        saveUninitialized: false
-    }));
-    app.use(passport.initialize());
-    app.use(passport.session());
-
-    var privateRoutes = ['/brackets', '/user', '/download', '/download-folder'];
-
-    app.get(privateRoutes, ensureLoggedIn);
 
     app.get('/', function (req, res, next) {
         debug('Got request ' + req.url);
-        res.render('login', {
-            title: 'nodeSpeed IDE',
-            env: env
-        });
+        res.redirect('/brackets');
     });
-
-    app.get('/profile', function (req, res) {
-        debug('Got request ' + req.url);
-        res.json(req.user);
-    });
-
-    app.get('/login', function (req, res) {
-        debug('Got login request');
-        res.redirect('/');
-    });
-
-    app.get('/login-fail', function (req, res) {
-        debug('Got request ' + req.url);
-        res.send(req.url);
-    });
-
-    app.get('/logout', function (req, res) {
-        debug('Got request ' + req.url);
-        req.logout();
-        res.redirect('/');
-    });
-
-    app.get('/callback', passport.authenticate('auth0', {
-            failureRedirect: '/login-fail'
-        }),
-        function (req, res) {
-            debug('User ' + req.user.displayName + ' authenticated');
-            res.redirect('/brackets');
-        });
 
     app.get('/download', function (req, res) {
         debug('Got request ' + req.url);
@@ -299,11 +199,9 @@
         debug('Got request ' + req.url);
         if (req.query.path) {
 
-            var folderPath = req.query.path.replace('/projects', opts.projectsDir);
-
-            var folderName = folderPath.substr(folderPath.lastIndexOf('/') + 1);
-
-            var archive = archiver('zip');
+            var folderPath = req.query.path.replace('/projects', opts.projectsDir),
+                folderName = folderPath.substr(folderPath.lastIndexOf('/') + 1),
+                archive = archiver('zip');
 
             res.attachment(folderName + '.zip');
 
