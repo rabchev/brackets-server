@@ -1,3 +1,9 @@
+IMPORTANT
+=========
+There is a new project derived from this one: [nodeSpeed IDE](https://github.com/whoGloo/nodespeed-ide).
+
+Since I’m not able to actively maintain this project, I encourage everyone interested to use and support the new one.
+
 Brackets Server
 ===============
 
